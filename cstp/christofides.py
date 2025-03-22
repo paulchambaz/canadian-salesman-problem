@@ -16,6 +16,8 @@ def christofides_tsp(graph: nx.Graph) -> Tuple[Path, Weight]:
 
     # 1. Calculate a minimum weight spanning tree T of G
     minimum_spanning_tree = nx.minimum_spanning_tree(graph)
+
+    # TODO: change to logging
     print("MST:")
     for u, v, d in minimum_spanning_tree.edges(data=True):
         print(u, v)
@@ -25,7 +27,7 @@ def christofides_tsp(graph: nx.Graph) -> Tuple[Path, Weight]:
         node for node, degree in minimum_spanning_tree.degree() if degree % 2 == 1
     ]
 
-    # Create the subgraph induces by odd degree vertices
+    # Create the subgraph induces by I
     odd_vertices_subgraph = nx.Graph()
     odd_vertex_pairs = itertools.combinations(odd_degree_vertices, 2)
     for vertex_u, vertex_v in odd_vertex_pairs:
@@ -35,6 +37,8 @@ def christofides_tsp(graph: nx.Graph) -> Tuple[Path, Weight]:
 
     # Find minimum weight perfect matching
     minimum_weight_matching = min_weight_matching(odd_vertices_subgraph)
+
+    # TODO: change to logging
     print("Perfect matching: ", minimum_weight_matching)
 
     # 3. Define a multigraph H from the edges of M and T
@@ -43,12 +47,16 @@ def christofides_tsp(graph: nx.Graph) -> Tuple[Path, Weight]:
         eulerian_multigraph.add_edge(
             vertex_u, vertex_v, weight=graph[vertex_u][vertex_v]["weight"]
         )
+
+    # TODO: change to logging
     print("Multigraph")
     for u, v, d in eulerian_multigraph.edges(data=True):
         print(u, v)
 
     # 4. Find a Eulerian cycle in H (H is Eulerian because it is connected and all vertices have even degree)
     eulerian_cycle = list(eulerian_circuit(eulerian_multigraph))
+
+    # TODO: change to logging
     print("Eulerian cycle:", eulerian_cycle)
 
     # 5. Transform the Eulerian cycle into a Hamiltonian cycle by removing any double passages on certain vertices
@@ -79,10 +87,6 @@ def shortcut_eulerian_path(eulerian_path: List[T]) -> Path:
 
 
 def calculate_path_weight(graph: nx.Graph, path: List[T]) -> Weight:
-    # it is strange that we do not have something better
-    if len(path) <= 1:
-        return 0.0
-
     total_path_weight: Weight = 0.0
     for i in range(len(path) - 1):
         vertex_u, vertex_v = path[i], path[i + 1]

@@ -2,11 +2,18 @@ from .utils import create_complete_graph_from_points
 from .christofides import christofides_tsp
 import matplotlib.pyplot as plt
 import networkx as nx
+import random
+
+
+def rand(low, high):
+    return random.random() * (high - low) + low
 
 
 def main():
-    pass
-    coordinate_points = [(-1, 1), (1, 1), (-2, 0), (2, 0), (0, -1)]
+    n = 50
+    coordinate_points = [(rand(-5.0, 5.0), rand(-5.0, 5.0)) for _ in range(n)]
+
+    # coordinate_points = [(-1, 1), (1, 1), (-2, 0), (2, 0), (0, -1)]
     complete_graph = create_complete_graph_from_points(coordinate_points)
     optimal_tour, total_cost = christofides_tsp(complete_graph)
 
