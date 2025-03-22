@@ -89,7 +89,6 @@ cover/
 
 # Jupyter Notebook
 .ipynb_checkpoints
-*.ipynb
 
 # Documentation
 docs/_build/
