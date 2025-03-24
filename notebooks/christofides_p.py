@@ -18,10 +18,7 @@ def generer_graphe_tsp(n):
 
     return G, positions
 
-def travelling_salesman_christofides(n = 10, return_difference = False):
-    ratio = 0
-    G, positions = generer_graphe_tsp(n)
-
+def travelling_salesman_christofides(G, return_difference = False):
     # arbre couvrante poids min
     T = nx.minimum_spanning_tree(G)
 
@@ -62,10 +59,9 @@ def travelling_salesman_christofides(n = 10, return_difference = False):
         edge_list_tsp_nx = [(visited_nx[i],visited_nx[i+1]) for i in range(len(visited_nx)-1)]
         edge_list_tsp_nx.append((visited_nx[-1],visited_nx[0]))
         final_G_nx = G.edge_subgraph(edge_list_tsp_nx)
-        print(n)
         lamda = (final_G_nx.size(weight = 'weight') - final_G.size(weight = 'weight')) 
         print("-------")
-    return final_G.size(weight = 'weight'), lamda
+    return edge_list_tsp, lamda
 
-for i in range(10,100,10):
-    print(travelling_salesman_christofides(n= i, return_difference=True)[1])
+#for i in range(10,100,10):
+ #   print(travelling_salesman_christofides(n= i, return_difference=True)[1])
