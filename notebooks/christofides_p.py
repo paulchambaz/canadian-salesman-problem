@@ -63,5 +63,132 @@ def travelling_salesman_christofides(G, return_difference = False):
         print("-------")
     return edge_list_tsp, lamda
 
-#for i in range(10,100,10):
- #   print(travelling_salesman_christofides(n= i, return_difference=True)[1])
+
+## Cyclic Routing ##
+
+def find_successor(P, n):
+    return list(P.adj[n])[0]
+
+
+# sort bc idk how to do better
+def sort_vm(vm,s,dir):
+    smaller_than_s = list(filter(lambda el: el < s, vm))
+    bigger_than_s = list(filter(lambda el: el > s, vm))
+    if dir == -1:
+        return [s] + sorted(smaller_than_s,reverse=True) + sorted(bigger_than_s,reverse=True)
+    else:
+        return [s] + sorted(bigger_than_s) + sorted(smaller_than_s) 
+
+def shortcut(Vm, Pcr, dir,G,blocked):
+    Vm = [Vm[0]] + Vm[1:][::dir]
+    Vm_1 = Vm.copy()
+    vm = sort_vm(Vm[1:],Vm[0],dir )
+    print(vm)
+    print("---------- after sort")
+    Em = []
+    i = 0
+    j = 1
+    while j < len(Vm):
+        vmi = vm[i]
+        vmj = vm[j]
+
+        current_edge = (vmi,vmj) 
+        if not current_edge in blocked:
+            Vm_1.remove(vmj)
+            Pcr.append(current_edge)
+            i = j
+            j = i + 1
+        else: # blockage
+            Em.append(current_edge)
+            l = 1
+
+            vl = find_successor(G,vmi)
+            vmi_vl_edge = (vmi, vl)
+            vl_vmj_edge = (vl, vmj)
+            vmi_vl_blocked = vmi_vl_edge in blocked
+            vl_vmj_blocked = vl_vmj_edge in blocked
+            while not vl == vmj and (vmi_vl_blocked or vl_vmj_blocked):
+                if vmi_vl_blocked:
+                    Em.append(vmi_vl_edge)
+                if vl_vmj_blocked:
+                    Em.append(vl_vmj_edge)
+                l += 1
+                vl = find_successor(G,vl)
+                vmi_vl_edge = (vmi, vl)
+                vl_vmj_edge = (vl, vmj)
+                vmi_vl_blocked = vmi_vl_edge in blocked
+                vl_vmj_blocked = vl_vmj_edge in blocked
+            if not vl == vmj:
+                Vm_1.remove(vmj)
+                Pcr.append(vmi_vl_edge)
+                Pcr.append(vl_vmj_edge)
+                i = j
+                j =  i + 1
+            else:
+                j = j + 1
+    return Vm_1
+
+
+def turn_around_vm(Vm):
+    Vm_new = [(vmj,vmi) for vmi,vmj in Vm]
+    return Vm_new
+
+
+def cyclic_routing(G, blocked):
+    blocked = blocked + turn_around_vm(blocked)
+
+    Pcr = []
+    m = 1
+    graphs = {
+        -1 : G.reverse(),
+        1  : G
+    }
+    nodelist = list(G.nodes())
+    Vm = nodelist.copy()
+    last_m_end = -1 # node where last iteration ended
+    dir = 1
+    while not Vm == []:
+        print(Vm)
+        if m == 1 or last_m_end == Vm[0]:
+            last_m_end = Vm[-1]
+            if m == 1:
+                Vm_1 = shortcut(Vm,Pcr,dir,graphs[dir],blocked)
+            else:
+                Vm_1 = shortcut(Vm,Pcr,dir,graphs[dir],blocked)
+            
+            if Vm == Vm_1:
+                dir *= -1
+                Vm = shortcut(Vm, Pcr, dir,graphs[dir],blocked)
+            else:
+                Vm = Vm_1.copy()
+        else:
+            dir *= -1
+            last_m_end = Vm[-1]
+            Vm = shortcut(Vm, Pcr, dir,graphs[dir],blocked)
+        if len(Vm) == 1:
+            Vm = []
+            pass
+        else: 
+            Vm = [Pcr[-1][1]] + Vm[1:]
+        m += 1
+        
+    print(Pcr)
+    return Pcr
+
+def canadian_traveller_cyclic_routing(G, blocked):
+    # for the cr algorithm nodes need to be labeled in ascending order
+    tour = travelling_salesman_christofides(G)[0]
+    tour_nodes = [n1 for (n1,_) in tour]
+    node_map = {node:i for i,node in enumerate(tour_nodes)}
+    print(node_map)
+    P = [(i,i+1) for i in range(len(tour_nodes)-1)] + [(len(tour_nodes)-1,0)]
+    tsp_tour_G = nx.DiGraph(P)
+
+
+    blocked_mapped = [(node_map[i],node_map[j]) for (i,j) in blocked]
+    tour_cr = cyclic_routing(tsp_tour_G, blocked_mapped)
+
+    node_map_inv = {j:i for (i,j) in node_map.items()}
+    print(node_map_inv)
+    tour_cr = [(node_map_inv[i], node_map_inv[j]) for (i,j) in tour_cr]
+    return nx.edge_subgraph(G, tour_cr)
