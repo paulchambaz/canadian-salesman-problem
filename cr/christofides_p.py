@@ -2,22 +2,6 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
 
-
-def generer_graphe_tsp(n):
-    # Générer des positions aléatoires dans un espace 2D
-    positions = {i: np.random.rand(2) for i in range(n)}
-    
-    # Créer un graphe complet respectant l'inégalité triangulaire
-    G = nx.complete_graph(n)
-    for i in range(n):
-        for j in range(i + 1, n):
-            # Calculer la distance euclidienne entre les points
-            poids = np.linalg.norm(positions[i] - positions[j]) * 10
-            G[i][j]['weight'] = poids
-            G[j][i]['weight'] = poids  # Graphe non orienté
-
-    return G, positions
-
 def travelling_salesman_christofides(G, return_difference = False):
     # arbre couvrante poids min
     T = nx.minimum_spanning_tree(G)
@@ -167,12 +151,21 @@ def cyclic_routing(G, blocked):
             Vm = shortcut(Vm, Pcr, dir,graphs[dir],blocked)
         if len(Vm) == 1:
             Vm = []
-            pass
         else: 
             Vm = [Pcr[-1][1]] + Vm[1:]
         m += 1
         
+    print("Pre final PCR---")
     print(Pcr)
+    print("Final PCR")
+    # retour 
+    Vm = [Pcr[-1][1],0]
+    if len(shortcut(Vm, Pcr, dir, graphs[dir],blocked)) == 2:
+        print("Again")
+        dir *= -1
+        shortcut(Vm, Pcr, dir, graphs[dir],blocked)
+    print(Pcr)
+
     return Pcr
 
 def canadian_traveller_cyclic_routing(G, blocked):
