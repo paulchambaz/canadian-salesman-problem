@@ -44,7 +44,6 @@ def travelling_salesman_christofides(G, return_difference = False):
         edge_list_tsp_nx.append((visited_nx[-1],visited_nx[0]))
         final_G_nx = G.edge_subgraph(edge_list_tsp_nx)
         lamda = (final_G_nx.size(weight = 'weight') - final_G.size(weight = 'weight')) 
-        print("-------")
     return edge_list_tsp, lamda
 
 
@@ -67,8 +66,6 @@ def shortcut(Vm, Pcr, dir,G,blocked):
     Vm = [Vm[0]] + Vm[1:][::dir]
     Vm_1 = Vm.copy()
     vm = sort_vm(Vm[1:],Vm[0],dir )
-    print(vm)
-    print("---------- after sort")
     Em = []
     i = 0
     j = 1
@@ -132,7 +129,6 @@ def cyclic_routing(G, blocked):
     last_m_end = -1 # node where last iteration ended
     dir = 1
     while not Vm == []:
-        print(Vm)
         if m == 1 or last_m_end == Vm[0]:
             last_m_end = Vm[-1]
             if m == 1:
@@ -154,17 +150,12 @@ def cyclic_routing(G, blocked):
         else: 
             Vm = [Pcr[-1][1]] + Vm[1:]
         m += 1
-        
-    print("Pre final PCR---")
-    print(Pcr)
-    print("Final PCR")
+    
     # retour 
     Vm = [Pcr[-1][1],0]
     if len(shortcut(Vm, Pcr, dir, graphs[dir],blocked)) == 2:
-        print("Again")
         dir *= -1
         shortcut(Vm, Pcr, dir, graphs[dir],blocked)
-    print(Pcr)
 
     return Pcr
 
@@ -173,7 +164,6 @@ def canadian_traveller_cyclic_routing(G, blocked):
     tour = travelling_salesman_christofides(G)[0]
     tour_nodes = [n1 for (n1,_) in tour]
     node_map = {node:i for i,node in enumerate(tour_nodes)}
-    print(node_map)
     P = [(i,i+1) for i in range(len(tour_nodes)-1)] + [(len(tour_nodes)-1,0)]
     tsp_tour_G = nx.DiGraph(P)
 
@@ -182,6 +172,5 @@ def canadian_traveller_cyclic_routing(G, blocked):
     tour_cr = cyclic_routing(tsp_tour_G, blocked_mapped)
 
     node_map_inv = {j:i for (i,j) in node_map.items()}
-    print(node_map_inv)
     tour_cr = [(node_map_inv[i], node_map_inv[j]) for (i,j) in tour_cr]
-    return nx.edge_subgraph(G, tour_cr)
+    return nx.DiGraph(tour_cr)
