@@ -27,6 +27,8 @@
           numpy
           matplotlib
           networkx
+          tqdm
+          scipy
         ];
       in {
         devShells.default = pkgs.mkShell {
