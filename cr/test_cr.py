@@ -23,7 +23,7 @@ class TestCrRouting(unittest.TestCase):
                     connected = nx.is_connected(G_verify)
                 G_cr_tour = cr.canadian_traveller_cyclic_routing(G,blockages)
                 self.assertTrue(nx.has_eulerian_path(G_cr_tour)) 
-
+    
 
 
 if __name__ == "__main__":
