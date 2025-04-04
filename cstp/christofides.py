@@ -1,13 +1,10 @@
-from typing import List, Tuple, Set, TypeVar
+from typing import List, Tuple, Set
 import networkx as nx
 from networkx.algorithms.matching import min_weight_matching
 from networkx.algorithms.euler import eulerian_circuit
 import itertools
-
-T = TypeVar("T")
-Weight = float
-Edge = Tuple[T, T]
-Path = List[T]
+from .utils import calculate_path_weight
+from .types import T, Weight, Path
 
 
 def christofides_tsp(graph: nx.Graph) -> Tuple[Path, Weight]:
@@ -16,11 +13,6 @@ def christofides_tsp(graph: nx.Graph) -> Tuple[Path, Weight]:
 
     # 1. Calculate a minimum weight spanning tree T of G
     minimum_spanning_tree = nx.minimum_spanning_tree(graph)
-
-    # TODO: change to logging
-    print("MST:")
-    for u, v, d in minimum_spanning_tree.edges(data=True):
-        print(u, v)
 
     # 2. Let I be the set of vertices with odd degree in T, calculate a minimum weight perfect matching M in the subgraph induced by the vertices of I
     odd_degree_vertices: List[T] = [
@@ -38,9 +30,6 @@ def christofides_tsp(graph: nx.Graph) -> Tuple[Path, Weight]:
     # Find minimum weight perfect matching
     minimum_weight_matching = min_weight_matching(odd_vertices_subgraph)
 
-    # TODO: change to logging
-    print("Perfect matching: ", minimum_weight_matching)
-
     # 3. Define a multigraph H from the edges of M and T
     eulerian_multigraph = nx.MultiGraph(minimum_spanning_tree)
     for vertex_u, vertex_v in minimum_weight_matching:
@@ -48,20 +37,11 @@ def christofides_tsp(graph: nx.Graph) -> Tuple[Path, Weight]:
             vertex_u, vertex_v, weight=graph[vertex_u][vertex_v]["weight"]
         )
 
-    # TODO: change to logging
-    print("Multigraph")
-    for u, v, d in eulerian_multigraph.edges(data=True):
-        print(u, v)
-
     # 4. Find a Eulerian cycle in H (H is Eulerian because it is connected and all vertices have even degree)
     eulerian_cycle = list(eulerian_circuit(eulerian_multigraph))
 
-    # TODO: change to logging
-    print("Eulerian cycle:", eulerian_cycle)
-
     # 5. Transform the Eulerian cycle into a Hamiltonian cycle by removing any double passages on certain vertices
     hamiltonian_cycle = shortcut_eulerian_path([vertex for vertex, _ in eulerian_cycle])
-    print("Hamiltonian cycle:", hamiltonian_cycle)
 
     # Calculate total weight of the tour
     total_tour_weight = calculate_path_weight(graph, hamiltonian_cycle)
@@ -84,13 +64,3 @@ def shortcut_eulerian_path(eulerian_path: List[T]) -> Path:
         hamiltonian_cycle.append(hamiltonian_cycle[0])
 
     return hamiltonian_cycle
-
-
-def calculate_path_weight(graph: nx.Graph, path: List[T]) -> Weight:
-    total_path_weight: Weight = 0.0
-    for i in range(len(path) - 1):
-        vertex_u, vertex_v = path[i], path[i + 1]
-        edge_weight = graph[vertex_u][vertex_v]["weight"]
-        total_path_weight += edge_weight
-
-    return total_path_weight

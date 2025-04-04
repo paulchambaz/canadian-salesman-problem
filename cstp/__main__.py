@@ -1,51 +1,41 @@
-from .utils import create_complete_graph_from_points
+from .utils import create_random_graph, create_random_blocks, create_polygon_graph
 from .christofides import christofides_tsp
+from .cnn import cnn_cctp
 import matplotlib.pyplot as plt
 import networkx as nx
-import random
 
 
-def rand(low, high):
-    return random.random() * (high - low) + low
+def test_christofides():
+    n = 100
 
+    graph = create_random_graph(n)
+    tour, cost = christofides_tsp(graph)
+    print("done")
 
-def main():
-    n = 50
-    coordinate_points = [(rand(-5.0, 5.0), rand(-5.0, 5.0)) for _ in range(n)]
-
-    # coordinate_points = [(-1, 1), (1, 1), (-2, 0), (2, 0), (0, -1)]
-    complete_graph = create_complete_graph_from_points(coordinate_points)
-    optimal_tour, total_cost = christofides_tsp(complete_graph)
-
-    print(f"Tour: {optimal_tour}")
-    print(f"Cost: {total_cost}")
-
-    # visualisation
-
-    pos = nx.get_node_attributes(complete_graph, "pos")
+    pos = nx.get_node_attributes(graph, "pos")
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+
     ax1.set_title("Complete Graph")
     nx.draw(
-        complete_graph,
+        graph,
         pos,
         with_labels=True,
         node_color="lightblue",
+        edge_color="gray",
         node_size=500,
+        width=0.2,
         font_weight="bold",
         ax=ax1,
     )
-    edge_labels = {
-        (u, v): f"{d['weight']:.2f}" for u, v, d in complete_graph.edges(data=True)
-    }
-    nx.draw_networkx_edge_labels(complete_graph, pos, edge_labels=edge_labels, ax=ax1)
+
+    ax2.set_title(f"Christofides Tour (Cost: {cost:.2f})")
 
     tour_graph = nx.Graph()
-    for i in range(len(optimal_tour) - 1):
-        u, v = optimal_tour[i], optimal_tour[i + 1]
+    for i in range(len(tour) - 1):
+        u, v = tour[i], tour[i + 1]
         tour_graph.add_edge(u, v)
 
-    ax2.set_title(f"Christofides Tour (Cost: {total_cost:.2f})")
     nx.draw(
         tour_graph,
         pos,
@@ -55,13 +45,115 @@ def main():
         font_weight="bold",
         ax=ax2,
     )
-    tour_edges = list(zip(optimal_tour, optimal_tour[1:] + [optimal_tour[0]]))
+    tour_edges = list(zip(tour, tour[1:] + [tour[0]]))
     nx.draw_networkx_edges(
         tour_graph, pos, edgelist=tour_edges, width=2, edge_color="r", ax=ax2
     )
 
     plt.tight_layout()
     plt.show()
+
+
+def test_cnn():
+    n = 6
+    k = n - 2
+
+    graph = create_polygon_graph(n)
+    blocked_edges = create_random_blocks(k, graph)
+
+    christofides_tour, christofides_cost = christofides_tsp(graph)
+    cnn_tour, cnn_cost = cnn_cctp(graph, blocked_edges)
+    print("done")
+
+    pos = nx.get_node_attributes(graph, "pos")
+
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(18, 6))
+
+    ax1.set_title("Graphe complet avec arêtes bloquées")
+    nx.draw(
+        graph,
+        pos,
+        with_labels=True,
+        node_color="lightblue",
+        edge_color="gray",
+        width=0.5,
+        node_size=300,
+        ax=ax1,
+    )
+
+    blocked_edges_list = [
+        (u, v) for u, v in graph.edges() if (min(u, v), max(u, v)) in blocked_edges
+    ]
+    nx.draw_networkx_edges(
+        graph,
+        pos,
+        edgelist=blocked_edges_list,
+        edge_color="black",
+        width=1,
+        ax=ax1,
+    )
+
+    ax2.set_title(f"Tour Christofides (Coût: {christofides_cost:.2f})")
+
+    christofides_tour_graph = nx.Graph()
+    for i in range(len(christofides_tour) - 1):
+        u, v = christofides_tour[i], christofides_tour[i + 1]
+        christofides_tour_graph.add_edge(u, v)
+
+    nx.draw(
+        christofides_tour_graph,
+        pos,
+        with_labels=True,
+        node_color="lightgreen",
+        node_size=500,
+        font_weight="bold",
+        ax=ax2,
+    )
+    tour_edges = list(
+        zip(christofides_tour, christofides_tour[1:] + [christofides_tour[0]])
+    )
+    nx.draw_networkx_edges(
+        christofides_tour_graph,
+        pos,
+        edgelist=tour_edges,
+        width=2,
+        edge_color="r",
+        ax=ax2,
+    )
+
+    ax3.set_title(f"Tour CNN (Coût: {cnn_cost:.2f})")
+
+    cnn_tour_graph = nx.Graph()
+    for i in range(len(cnn_tour) - 1):
+        u, v = cnn_tour[i], cnn_tour[i + 1]
+        cnn_tour_graph.add_edge(u, v)
+
+    nx.draw(
+        cnn_tour_graph,
+        pos,
+        with_labels=True,
+        node_color="lightgreen",
+        node_size=500,
+        font_weight="bold",
+        ax=ax3,
+    )
+    tour_edges = list(zip(cnn_tour, cnn_tour[1:] + [cnn_tour[0]]))
+    nx.draw_networkx_edges(
+        cnn_tour_graph,
+        pos,
+        edgelist=tour_edges,
+        width=2,
+        edge_color="r",
+        ax=ax3,
+    )
+
+    plt.tight_layout()
+    plt.show()
+
+
+def main():
+    # test_christofides()
+    test_cnn()
 
 
 if __name__ == "__main__":
