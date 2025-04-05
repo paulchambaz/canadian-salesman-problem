@@ -1,4 +1,4 @@
-from .utils import create_random_graph, create_random_blocks, create_polygon_graph
+from .utils import create_random_graph, create_random_blocks, create_polygon_graph, edge
 from .christofides import christofides_tsp
 from .cnn import cnn_cctp
 import matplotlib.pyplot as plt
@@ -58,8 +58,10 @@ def test_cnn():
     n = 6
     k = n - 2
 
+    # graph = create_random_graph(n)
     graph = create_polygon_graph(n)
     blocked_edges = create_random_blocks(k, graph)
+    # blocked_edges = {(2, 4), (0, 4), (0, 5), (0, 2)}
 
     christofides_tour, christofides_cost = christofides_tsp(graph)
     cnn_tour, cnn_cost = cnn_cctp(graph, blocked_edges)
@@ -82,7 +84,7 @@ def test_cnn():
     )
 
     blocked_edges_list = [
-        (u, v) for u, v in graph.edges() if (min(u, v), max(u, v)) in blocked_edges
+        edge(u, v) for u, v in graph.edges() if edge(u, v) in blocked_edges
     ]
     nx.draw_networkx_edges(
         graph,

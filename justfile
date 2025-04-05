@@ -5,7 +5,8 @@ benchmark *ARGS:
   python -m scripts.benchmark_christofides {{ ARGS }}
 
 test *ARGS:
-  python -m scripts.test_christofides {{ ARGS }}
+  # python -m scripts.test_christofides {{ ARGS }}
+  python -m scripts.test_cnn {{ ARGS }}
 
 visualize *ARGS:
   python -m scripts.visualize_christofides {{ ARGS }}

@@ -27,9 +27,9 @@ def create_random_blocks(n: int, graph: nx.Graph) -> Set[Edge]:
     edges = list(graph.edges())
     blocked_edges = set()
     for _ in range(n):
-        edge = random.choice(edges)
-        blocked_edges.add((min(edge), max(edge)))
-        edges.remove(edge)
+        u, v = random.choice(edges)
+        blocked_edges.add(edge(u, v))
+        edges.remove((u, v))
     return blocked_edges
 
 
@@ -93,3 +93,7 @@ def measure_runtime(
 
     stats = compute_stats(runtimes)
     return {**stats, "runtimes": runtimes}
+
+
+def edge(u, v):
+    return (min(u, v), max(u, v))
