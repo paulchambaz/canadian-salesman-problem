@@ -1,20 +1,19 @@
 import pickle
 import random
-import time
 from pathlib import Path
 
 import numpy as np
 from tqdm import tqdm
 
-from cstp import christofides, utils
+from cstp import christofides, tsp, utils
 
 
 def main():
     seed = 42
-    min_n = 20
-    max_n = 400
-    step = 20
-    repeats = 15
+    min_n = 4
+    max_n = 10
+    step = 1
+    repeats = 20
 
     random.seed(seed)
     np.random.seed(seed)
@@ -22,19 +21,19 @@ def main():
     sizes = np.arange(min_n, max_n + 1, step)
     results = {"seed": seed, "sizes": sizes, "data": {}}
 
-    for n in tqdm(sizes, desc="Testing graph sizes"):
-        runtimes = []
+    for n in tqdm(sizes, desc="Benchmarking christofides ratio"):
+        ratios = []
         for _ in tqdm(range(repeats), desc=f"Testing n={n}", leave=False):
             graph = utils.create_random_graph(n)
-            start = time.time()
-            christofides.christofides_tsp(graph)
-            runtimes(time.time() - start)
+            _, optimal_cost = tsp.optimal_tsp(graph)
+            _, christofides_cost = christofides.christofides_tsp(graph)
+            ratios.append(christofides_cost / optimal_cost)
 
-        stats = utils.compute_stats(runtimes)
-        results["data"][n] = {**stats, "runtimes": runtimes}
+        stats = utils.compute_stats(ratios)
+        results["data"][n] = {**stats, "ratios": ratios}
 
     Path("results").mkdir(exist_ok=True)
-    filename = "results/christofides_runtime_results.pk"
+    filename = "results/christofides_ratio_results.pk"
     with open(filename, "wb") as f:
         pickle.dump(results, f)
 

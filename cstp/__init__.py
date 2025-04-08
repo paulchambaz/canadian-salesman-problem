@@ -1,5 +1,3 @@
-from . import tsp
-from . import utils
-from . import christofides
+from . import christofides, tsp, utils
 
-__all__ = ["tsp", "utils", "christofides"]
+__all__ = ["cnn", "tsp", "utils", "christofides"]

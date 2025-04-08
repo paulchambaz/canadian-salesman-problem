@@ -1,8 +1,14 @@
-from .utils import create_random_graph, create_random_blocks, create_polygon_graph, edge
-from .christofides import christofides_tsp
-from .cnn import cnn_cctp
 import matplotlib.pyplot as plt
 import networkx as nx
+
+from .christofides import christofides_tsp
+from .cnn import cnn_cctp
+from .utils import (
+    create_polygon_graph,
+    create_random_blocks,
+    create_random_graph,
+    edge,
+)
 
 
 def test_christofides():
@@ -10,7 +16,6 @@ def test_christofides():
 
     graph = create_random_graph(n)
     tour, cost = christofides_tsp(graph)
-    print("done")
 
     pos = nx.get_node_attributes(graph, "pos")
 
@@ -45,7 +50,7 @@ def test_christofides():
         font_weight="bold",
         ax=ax2,
     )
-    tour_edges = list(zip(tour, tour[1:] + [tour[0]]))
+    tour_edges = list(zip(tour, tour[1:] + [tour[0]], strict=False))
     nx.draw_networkx_edges(
         tour_graph, pos, edgelist=tour_edges, width=2, edge_color="r", ax=ax2
     )
@@ -55,17 +60,15 @@ def test_christofides():
 
 
 def test_cnn():
-    n = 6
+    n = 100
     k = n - 2
 
-    # graph = create_random_graph(n)
-    graph = create_polygon_graph(n)
+    graph = create_random_graph(n)
+    # graph = create_polygon_graph(n)
     blocked_edges = create_random_blocks(k, graph)
-    # blocked_edges = {(2, 4), (0, 4), (0, 5), (0, 2)}
 
     christofides_tour, christofides_cost = christofides_tsp(graph)
-    cnn_tour, cnn_cost = cnn_cctp(graph, blocked_edges)
-    print("done")
+    cnn_tour, cnn_cost = cnn_cctp(graph, blocked_edges, christofides_tour)
 
     pos = nx.get_node_attributes(graph, "pos")
 
@@ -112,7 +115,11 @@ def test_cnn():
         ax=ax2,
     )
     tour_edges = list(
-        zip(christofides_tour, christofides_tour[1:] + [christofides_tour[0]])
+        zip(
+            christofides_tour,
+            christofides_tour[1:] + [christofides_tour[0]],
+            strict=False,
+        )
     )
     nx.draw_networkx_edges(
         christofides_tour_graph,
@@ -139,7 +146,7 @@ def test_cnn():
         font_weight="bold",
         ax=ax3,
     )
-    tour_edges = list(zip(cnn_tour, cnn_tour[1:] + [cnn_tour[0]]))
+    tour_edges = list(zip(cnn_tour, cnn_tour[1:] + [cnn_tour[0]], strict=False))
     nx.draw_networkx_edges(
         cnn_tour_graph,
         pos,
