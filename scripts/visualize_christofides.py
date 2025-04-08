@@ -1,6 +1,7 @@
 import pickle
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
 from scipy.optimize import curve_fit
 
 
@@ -50,16 +51,21 @@ def main():
     )
 
     plt.plot(
-        sizes, fit_line, "k-", linewidth=1, label=f"Linear fit: {a:.2e}x + {b:.2e}"
+        sizes,
+        fit_line,
+        "k-",
+        linewidth=1,
+        label=f"Linear fit: {a:.2e}x + {b:.2e}",
     )
 
     plt.grid(True, alpha=0.3)
     plt.xlabel("Number of vertices (n)")
     plt.ylabel("Cube root of runtime (s^(1/3))")
-    plt.title("Christofides Algorithm: Cube Root of Runtime vs n")
     plt.legend()
 
-    plt.annotate(f"R² = {r_squared:.4f}", xy=(0.05, 0.95), xycoords="axes fraction")
+    plt.annotate(
+        f"R² = {r_squared:.4f}", xy=(0.05, 0.95), xycoords="axes fraction"
+    )
 
     plt.tight_layout()
     plt.show()

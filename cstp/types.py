@@ -1,6 +1,17 @@
-from typing import List, Tuple, TypeVar
+"""Type definitions for TSP algorithm implementations.
 
-T = TypeVar("T")
+This module provides type aliases used throughout the TSP solver implementation
+to improve code readability and type safety.
+"""
+
+# Node represents a vertex in the graph
+Node = int
+
+# Weight represents the cost of traversing an edge
 Weight = float
-Edge = Tuple[T, T]
-Path = List[T]
+
+# Edge represents a connection between two nodes
+Edge = tuple[Node, Node]
+
+# Path represents a sequence of nodes to visit
+Path = list[Node]
