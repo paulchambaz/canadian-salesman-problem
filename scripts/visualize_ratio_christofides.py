@@ -2,9 +2,8 @@ import pickle
 
 import matplotlib.pyplot as plt
 
-
 def main():
-    with open("results/christofides_ratio_results.pk", "rb") as f:
+    with open("results/christofides_ratio_results_p.pk", "rb") as f:
         results = pickle.load(f)
 
     sizes = results["sizes"]
@@ -43,7 +42,7 @@ def main():
     plt.legend()
 
     plt.tight_layout()
-    plt.show()
+    plt.show(block=True)
 
 
 if __name__ == "__main__":

@@ -15,3 +15,6 @@ Edge = tuple[Node, Node]
 
 # Path represents a sequence of nodes to visit
 Path = list[Node]
+
+# Edge_Path represents a sequence of edges to visit
+Edge_Path = list[Edge]

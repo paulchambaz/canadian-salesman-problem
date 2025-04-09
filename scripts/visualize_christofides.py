@@ -6,7 +6,7 @@ from scipy.optimize import curve_fit
 
 
 def main():
-    with open("results/christofides_runtime_results.pk", "rb") as f:
+    with open("results/christofides_runtime_results_p.pk", "rb") as f:
         results = pickle.load(f)
 
     sizes = results["sizes"]
