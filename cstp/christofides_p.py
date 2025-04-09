@@ -106,19 +106,19 @@ def shortcut(Vm: Path, Pcr: Path, dir: int, G: nx.Graph, blocked: Path) -> Path:
     """Applies one iteration of the shortcut procedure on a cyclic routing path.
 
     This function performs a single iteration of the shortcutting process used in
-    cyclic routing. It modifies the virtual matching path (Vm) by attempting to
+    cyclic routing. It modifies the path (Vm) by attempting to
     bypass visited or blocked segments in the current routing path (Pcr), 
     following a given direction.
 
     Args:
-        Vm: The current virtual matching path (Path) to be modified.
+        Vm: Set of unvisited nodes in the Vm-1 iteration
         Pcr: The current cyclic routing path (Path).
         dir: Direction indicator (int), e.g., 1 for forward, -1 for backward traversal.
         G: The underlying graph (nx.Graph) used for evaluating potential shortcuts.
         blocked: A path (Path) representing edges that are blocked and must be avoided.
 
     Returns:
-        A new path (Path) resulting from applying one shortcut iteration to Vm.
+        List of unvisited nodes in Vm
     """
 
     Vm = [Vm[0]] + Vm[1:][::dir]
@@ -271,4 +271,4 @@ def canadian_traveller_cyclic_routing(G: nx.Graph, blocked: Path, tour: Edge_Pat
     tour_cr = [(node_map_inv[i], node_map_inv[j]) for (i, j) in tour_cr]
     final_G = nx.DiGraph(tour_cr)
     final_weight = graph_utils.calculate_path_weight(G,tour_cr)
-    return final_G, final_weight
+    return tour_cr, final_weight

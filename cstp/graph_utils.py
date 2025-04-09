@@ -57,3 +57,6 @@ def calculate_path_weight(graph: nx.Graph, path: Edge_Path)->Weight:
         total_path_weight += edge_weight
 
     return total_path_weight
+
+def calculate_path_from_edge_path(path:Edge_Path)->Path:
+    return [edge[0] for edge in path] + [path[-1][1]]

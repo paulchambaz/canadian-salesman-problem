@@ -1,31 +1,39 @@
-import unittest
+import random
 
-import christofides_p as cr
-import graph_utils as gu
-import networkx as nx
+from tqdm import tqdm
+
+from cstp import utils, christofides_p, graph_utils
 
 
-class TestCrRouting(unittest.TestCase):
-    def test_equality(self):
-        for i in range(5, 50):
-            print(f"Running for i={i}")
+def main():
+    n_instances: int = 200
 
-            for _ in range(10):
-                connected = False
-                G = gu.generer_graphe_tsp(i)
-                while not connected:
-                    number_of_edges = len(G.edges())
-                    k = (i - 2) / number_of_edges
-                    len_blockages_less_i = False
-                    while not len_blockages_less_i:
-                        blockages = gu.generer_blockages(G, percentage=k)
-                        len_blockages_less_i = len(blockages) < (i - 1)
-                    G_verify = G.copy()
-                    G_verify.remove_edges_from(blockages)
-                    connected = nx.is_connected(G_verify)
-                G_cr_tour = cr.canadian_traveller_cyclic_routing(G, blockages)
-                self.assertTrue(nx.has_eulerian_path(G_cr_tour))
+    for _ in tqdm(range(n_instances)):
+        n: int = int(random.uniform(4, 256))
+        k: int = int(random.uniform(0, n - 2))
+
+        graph = utils.create_random_graph(n)
+        blocked_edges = utils.create_random_blocks(k, graph)
+
+        cnn_tour, _ = christofides_p.canadian_traveller_cyclic_routing(graph, blocked_edges)
+
+        cnn_tour = graph_utils.calculate_path_from_edge_path(cnn_tour)
+        assert cnn_tour[0] == cnn_tour[-1], (
+            "Tour does not start and end at the same vertex"
+        )
+
+        assert set(cnn_tour) == set(graph.nodes()), (
+            "Tour did not contain all nodes"
+        )
+
+        edges = [
+            utils.edge(cnn_tour[i], cnn_tour[i + 1])
+            for i in range(len(cnn_tour) - 1)
+        ]
+        assert len(set(blocked_edges) & set(edges)) == 0, (
+            "Tour contains a blocked edge"
+        )
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()
