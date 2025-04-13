@@ -27,8 +27,8 @@ def main():
         for _ in tqdm(range(repeats), desc=f"Testing n={n}", leave=False):
             graph = utils.create_random_graph(n)
             start = time.time()
-            christofides.christofides_tsp(graph)
-            runtimes(time.time() - start)
+            _, _ = christofides.christofides_tsp(graph)
+            runtimes.append(time.time() - start)
 
         stats = utils.compute_stats(runtimes)
         results["data"][n] = {**stats, "runtimes": runtimes}

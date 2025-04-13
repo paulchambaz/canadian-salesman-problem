@@ -22,6 +22,17 @@
         devPkgs = with pkgs; [
           just
           python
+          (texlive.combine {
+            inherit
+              (texlive)
+              scheme-full
+              adjustbox
+              collectbox
+              tcolorbox
+              pgf
+              xetex
+              ;
+          })
         ];
         pythonPkgs = with pythonPackages; [
           numpy

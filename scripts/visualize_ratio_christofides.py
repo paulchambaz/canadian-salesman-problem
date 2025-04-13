@@ -4,6 +4,20 @@ import matplotlib.pyplot as plt
 
 
 def main():
+    # Set up matplotlib to use LaTeX for text rendering
+    plt.rcParams.update(
+        {
+            "text.usetex": True,
+            "font.family": "serif",
+            "font.serif": ["Computer Modern Roman"],
+            "axes.labelsize": 20,
+            "font.size": 20,
+            "legend.fontsize": 16,
+            "xtick.labelsize": 16,
+            "ytick.labelsize": 16,
+        }
+    )
+
     with open("results/christofides_ratio_results.pk", "rb") as f:
         results = pickle.load(f)
 
@@ -15,7 +29,13 @@ def main():
 
     plt.figure(figsize=(6, 6))
 
-    plt.axhline(y=1.5, color="black", label="ratio=1.5")
+    plt.axhline(
+        y=1.5,
+        color="black",
+        linestyle="--",
+        linewidth=1.5,
+        label=r"ratio $= 1.5$",
+    )
 
     plt.fill_between(
         sizes,
@@ -23,7 +43,7 @@ def main():
         maxs,
         alpha=0.2,
         color="#3498db",
-        label="Min and max of ratios",
+        label=r"Min et max des ratios",
     )
 
     plt.plot(
@@ -31,19 +51,31 @@ def main():
         iqms,
         "o-",
         color="#3498db",
-        linewidth=2,
-        label="IQM of ratios",
+        linewidth=2.5,
+        markersize=8,
+        label=r"IQM des ratios",
     )
 
-    plt.axhline(y=1.0, color="black", label="ratio=1.0")
+    plt.axhline(
+        y=1.0,
+        color="black",
+        linestyle="-",
+        linewidth=1.5,
+        label=r"ratio $= 1.0$",
+    )
 
     plt.grid(True, alpha=0.3)
-    plt.xlabel("Number of vertices (n)")
-    plt.ylabel("Ratio")
-    plt.legend()
+    plt.xlabel(r"Nombre de sommet ($n$)", fontsize=18)
+    plt.ylabel(r"Ratio", fontsize=18)
 
+    plt.legend(fontsize=16, framealpha=0.9)
     plt.tight_layout()
-    plt.show()
+
+    plt.savefig(
+        "paper/figures/christofides_ratio_plot.svg", bbox_inches="tight"
+    )
+
+    # plt.show()
 
 
 if __name__ == "__main__":

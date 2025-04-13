@@ -4,11 +4,11 @@ import networkx as nx
 from .christofides import christofides_tsp
 from .cnn import cnn_cctp
 from .utils import (
-    create_polygon_graph,
     create_random_blocks,
     create_random_graph,
     edge,
 )
+from .graphs import cnn_tight_bound_graph
 
 
 def test_christofides():
@@ -160,9 +160,49 @@ def test_cnn():
     plt.show()
 
 
+def test():
+    graph, blocked_edges = cnn_tight_bound_graph(1)
+    print(graph.nodes())
+    for u, v in sorted(graph.edges()):
+        print(f"({u} {v}) - {graph[u][v]['weight']}")
+    print(sorted(blocked_edges))
+
+    pos = nx.get_node_attributes(graph, "pos")
+
+    fig, (ax1) = plt.subplots(1, 1, figsize=(6, 6))
+
+    ax1.set_title("Graphe complet avec arêtes bloquées")
+    nx.draw(
+        graph,
+        pos,
+        with_labels=True,
+        node_color="lightblue",
+        edge_color="gray",
+        width=0.5,
+        node_size=300,
+        ax=ax1,
+    )
+
+    blocked_edges_list = [
+        edge(u, v) for u, v in graph.edges() if edge(u, v) in blocked_edges
+    ]
+    nx.draw_networkx_edges(
+        graph,
+        pos,
+        edgelist=blocked_edges_list,
+        edge_color="black",
+        width=1,
+        ax=ax1,
+    )
+
+    plt.tight_layout()
+    plt.show()
+
+
 def main():
     # test_christofides()
-    test_cnn()
+    # test_cnn()
+    test()
 
 
 if __name__ == "__main__":

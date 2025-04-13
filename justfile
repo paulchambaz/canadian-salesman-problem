@@ -4,24 +4,24 @@ run *ARGS:
 test *ARGS:
   python -m scripts.test_christofides {{ ARGS }}
   # python -m scripts.test_cr {{ ARGS }}
-  python -m scripts.test_cnn {{ ARGS }}
+  # python -m scripts.test_cnn {{ ARGS }}
 
 benchmark-ratio *ARGS:
   # python -m scripts.benchmark_ratio_christofides {{ ARGS }}
   # python -m scripts.benchmark_ratio_cr {{ ARGS }}
   python -m scripts.benchmark_ratio_cnn {{ ARGS }}
 
-benchmark-complexity *ARGS:
-  python -m scripts.benchmark_time_christofides {{ ARGS }}
-  # python -m scripts.benchmark_time_cr {{ ARGS }}
-  # python -m scripts.benchmark_time_cnn {{ ARGS }}
-
 visualize-ratio *ARGS:
   # python -m scripts.visualize_ratio_christofides {{ ARGS }}
   # python -m scripts.visualize_ratio_cr {{ ARGS }}
   python -m scripts.visualize_ratio_cnn {{ ARGS }}
 
-visualize-complexity *ARGS:
-  python -m scripts.visualize_time_christofides {{ ARGS }}
+benchmark-time *ARGS:
+  # python -m scripts.benchmark_time_christofides {{ ARGS }}
+  # python -m scripts.benchmark_time_cr {{ ARGS }}
+  python -m scripts.benchmark_time_cnn {{ ARGS }}
+
+visualize-time *ARGS:
+  # python -m scripts.visualize_time_christofides {{ ARGS }}
   # python -m scripts.visualize_time_cr {{ ARGS }}
-  # python -m scripts.visualize_time_cnn {{ ARGS }}
+  python -m scripts.visualize_time_cnn {{ ARGS }}
