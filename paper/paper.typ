@@ -160,7 +160,20 @@ Pour assurer la robustesse de notre implémentation face à différente configur
 Nous réutilisons ici les mêmes méthodes déjà utilisée durant les autres parties.
 
 === Analyse du rapport d'approximation
-Pour évaluons le rapport d'approximation empirique de CNN, on cherche une classe de graphe qui atteint la borne de complexité. Cela est le cas pour la famille de graphe qui sert d'exemple au fait que la borne en $O(log k)$ est serrée.
+Pour évaluons le rapport d'approximation empirique de CNN, on cherche une classe de graphe qui atteint la borne de complexité. Cela est le cas pour la famille de graphe qui sert d'exemple au fait que la borne en $O(log k)$ est serrée proposée par N. Hahn et M. Xefteris.
+
+#figure(
+  image("figures/cnn_ratio_plot.svg"),
+  caption: [
+    Évolution du rapport d'approximation de l'algorithme CNN sur des graphes de borne serrée en fonction du nombre de sommets. La courbe bleue avec marqueurs représente les ratios mesurés, tandis que la ligne pointillée noire montre la régression logarithmique avec son équation. La ligne horizontale noire indique le ratio idéal de 1.0.
+  ]
+) <fig-cnn-ratio>
+
+Le graphe consiste en une chaîne de triangles commençant en $v_0$ avec un sommet supplémentaire $u$ connecté uniquement au premier sommet. Les arêtes reliant $u$ au reste du graphe sont bloquée, ce qui fait que le tour après la phase de raccourci ne contient que $v_0$ et $u$. Contrairement à l'article, nous avons fait le choix de laisser les autres sommets pour avoir $k < n-1$ et que l'algorithme puisse tourner.
+
+La @fig-cnn-ratio présente les résultats de cette analyse. Comme prévu par la théorie, le rapport d'approximation croît logairthmiquement avec la taille du graphe, confirmant la borne en $O(log k)$. L'ajustement d'une courbe logarithmique aux données mesurées montre une forte corrélation, avec un coefficient de corrélation logarithmique $R^2$ de $0.81$. Ce résultat confirme que la borne supérieure théorique est effectivement serrée, car il existe des instances pour lesquelles l'algorithme CNN atteint un rapport d'approximation de $Omega(log k)$.
+
+Cette figure confirme aussi notre implémentation, on observe effectivement l'évolution attenue par l'analyse.
 
 === Analyse de complexité
 La complexité temporelle de l'algorithme CNN est dominée par celle de l'algorithme CNN, c'est pourquoi nous retirons la phase de calcul du tour de Christofides de la mesure de performance temporelle. On s'intéresse alors à la complexité du reste de l'exécution de l'algorithme.
@@ -200,7 +213,7 @@ La @fig-cnn-time-k présente les résultats de cette analyse, avec le temps d'ex
 //  - graphes basés sur des distances euclidiennes
 //  - graphes en grilles (Manhattan) avec inégalité triangulaire stricte
 //  - graphes fortement clusterisés (communautés avec distances courtes intra-cluster et longuers inter-clusters)
-//  - graphes asé sur des loi de puissances
+//  - graphes basé sur des loi de puissances
 //  - graphes basés sur des données réelles
 // pour chaque classes de problème, étudier :
 //  - évolution du ratio d'approximation empirique en fonction de n

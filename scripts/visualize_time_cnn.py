@@ -6,19 +6,6 @@ from scipy.optimize import curve_fit
 
 
 def visualize_n():
-    plt.rcParams.update(
-        {
-            "text.usetex": True,
-            "font.family": "serif",
-            "font.serif": ["Computer Modern Roman"],
-            "axes.labelsize": 20,
-            "font.size": 20,
-            "legend.fontsize": 16,
-            "xtick.labelsize": 16,
-            "ytick.labelsize": 16,
-        }
-    )
-
     with open("results/cnn_runtime_n_results.pk", "rb") as f:
         results = pickle.load(f)
 
@@ -88,19 +75,6 @@ def visualize_n():
 
 
 def visualize_k():
-    plt.rcParams.update(
-        {
-            "text.usetex": True,
-            "font.family": "serif",
-            "font.serif": ["Computer Modern Roman"],
-            "axes.labelsize": 20,
-            "font.size": 20,
-            "legend.fontsize": 16,
-            "xtick.labelsize": 16,
-            "ytick.labelsize": 16,
-        }
-    )
-
     with open("results/cnn_runtime_k_results.pk", "rb") as f:
         results = pickle.load(f)
 
@@ -170,6 +144,18 @@ def visualize_k():
 
 
 def main():
+    plt.rcParams.update(
+        {
+            "text.usetex": True,
+            "font.family": "serif",
+            "font.serif": ["Computer Modern Roman"],
+            "axes.labelsize": 20,
+            "font.size": 20,
+            "legend.fontsize": 16,
+            "xtick.labelsize": 16,
+            "ytick.labelsize": 16,
+        }
+    )
     visualize_n()
     visualize_k()
 

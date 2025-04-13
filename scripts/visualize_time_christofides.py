@@ -6,6 +6,7 @@ from scipy.optimize import curve_fit
 
 
 def main():
+<<<<<<< HEAD:scripts/visualize_time_christofides.py
     plt.rcParams.update(
         {
             "text.usetex": True,
@@ -20,6 +21,9 @@ def main():
     )
 
     with open("results/christofides_runtime_results.pk", "rb") as f:
+=======
+    with open("results/christofides_runtime_results_p.pk", "rb") as f:
+>>>>>>> 461931bbff81c3a1208f7ebf6850ef98b51afd4f:scripts/visualize_christofides.py
         results = pickle.load(f)
 
     sizes = results["sizes"]

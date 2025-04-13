@@ -2,8 +2,8 @@ import pickle
 
 import matplotlib.pyplot as plt
 
-
 def main():
+<<<<<<< HEAD
     # Set up matplotlib to use LaTeX for text rendering
     plt.rcParams.update(
         {
@@ -19,6 +19,9 @@ def main():
     )
 
     with open("results/christofides_ratio_results.pk", "rb") as f:
+=======
+    with open("results/christofides_ratio_results_p.pk", "rb") as f:
+>>>>>>> 461931bbff81c3a1208f7ebf6850ef98b51afd4f
         results = pickle.load(f)
 
     sizes = results["sizes"]
@@ -70,12 +73,16 @@ def main():
 
     plt.legend(fontsize=16, framealpha=0.9)
     plt.tight_layout()
+<<<<<<< HEAD
 
     plt.savefig(
         "paper/figures/christofides_ratio_plot.svg", bbox_inches="tight"
     )
 
     # plt.show()
+=======
+    plt.show(block=True)
+>>>>>>> 461931bbff81c3a1208f7ebf6850ef98b51afd4f
 
 
 if __name__ == "__main__":

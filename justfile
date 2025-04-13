@@ -25,3 +25,9 @@ visualize-time *ARGS:
   # python -m scripts.visualize_time_christofides {{ ARGS }}
   # python -m scripts.visualize_time_cr {{ ARGS }}
   python -m scripts.visualize_time_cnn {{ ARGS }}
+
+benchmark-graphs *ARGS:
+  python -m scripts.benchmark_ratio_graphs {{ ARGS }}
+
+visualize-graphs *ARGS:
+  python -m scripts.visualize_ratio_graphs {{ ARGS }}

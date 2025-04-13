@@ -3,12 +3,12 @@ import networkx as nx
 
 from .christofides import christofides_tsp
 from .cnn import cnn_cctp
+from .graphs import create_power_law_graph
 from .utils import (
     create_random_blocks,
     create_random_graph,
     edge,
 )
-from .graphs import cnn_tight_bound_graph
 
 
 def test_christofides():
@@ -161,11 +161,7 @@ def test_cnn():
 
 
 def test():
-    graph, blocked_edges = cnn_tight_bound_graph(1)
-    print(graph.nodes())
-    for u, v in sorted(graph.edges()):
-        print(f"({u} {v}) - {graph[u][v]['weight']}")
-    print(sorted(blocked_edges))
+    graph = create_power_law_graph(64)
 
     pos = nx.get_node_attributes(graph, "pos")
 
@@ -183,16 +179,9 @@ def test():
         ax=ax1,
     )
 
-    blocked_edges_list = [
-        edge(u, v) for u, v in graph.edges() if edge(u, v) in blocked_edges
-    ]
-    nx.draw_networkx_edges(
-        graph,
-        pos,
-        edgelist=blocked_edges_list,
-        edge_color="black",
-        width=1,
-        ax=ax1,
+    edge_labels = nx.get_edge_attributes(graph, "weight")
+    nx.draw_networkx_edge_labels(
+        graph, pos, edge_labels=edge_labels, font_size=8, ax=ax1
     )
 
     plt.tight_layout()

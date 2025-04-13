@@ -78,9 +78,9 @@ def main():
 
     plt.tight_layout()
 
-    # plt.savefig("paper/figures/cnn_ratio_plot.svg", bbox_inches="tight")
+    plt.savefig("paper/figures/cnn_ratio_plot.svg", bbox_inches="tight")
 
-    plt.show()
+    # plt.show()
 
 
 if __name__ == "__main__":
