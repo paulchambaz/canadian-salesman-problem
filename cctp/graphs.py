@@ -1,3 +1,6 @@
+"""List of helper function to create graphs."""
+# TODO: write proper docstring
+
 import math
 import random
 
@@ -90,7 +93,7 @@ def create_euclidian_graph(n: int) -> nx.Graph:
     return create_random_graph(n)
 
 
-def create_manhattan_grid_graph(n: int) -> nx.Graph:
+def create_manhattan_graph(n: int) -> nx.Graph:
     """Create a graph based on a 2D grid with Manhattan distances.
 
     Generates a grid of n^2 nodes arranged in an n times n grid, where nodes are

@@ -2,11 +2,11 @@ import random
 
 from tqdm import tqdm
 
-from cstp import utils, christofides_p, graph_utils
+from cctp import cr, utils
 
 
 def main():
-    n_instances: int = 200
+    n_instances: int = 1000
 
     for _ in tqdm(range(n_instances)):
         n: int = int(random.uniform(4, 256))
@@ -15,20 +15,19 @@ def main():
         graph = utils.create_random_graph(n)
         blocked_edges = utils.create_random_blocks(k, graph)
 
-        cnn_tour, _ = christofides_p.canadian_traveller_cyclic_routing(graph, blocked_edges)
+        cr_tour, _ = cr.cr_cctp(graph, blocked_edges)
 
-        cnn_tour = graph_utils.calculate_path_from_edge_path(cnn_tour)
-        assert cnn_tour[0] == cnn_tour[-1], (
+        assert cr_tour[0] == cr_tour[-1], (
             "Tour does not start and end at the same vertex"
         )
 
-        assert set(cnn_tour) == set(graph.nodes()), (
+        assert set(cr_tour) == set(graph.nodes()), (
             "Tour did not contain all nodes"
         )
 
         edges = [
-            utils.edge(cnn_tour[i], cnn_tour[i + 1])
-            for i in range(len(cnn_tour) - 1)
+            utils.edge(cr_tour[i], cr_tour[i + 1])
+            for i in range(len(cr_tour) - 1)
         ]
         assert len(set(blocked_edges) & set(edges)) == 0, (
             "Tour contains a blocked edge"

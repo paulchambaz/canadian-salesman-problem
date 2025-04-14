@@ -3,7 +3,7 @@ requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "cstp"
+name = "cctp"
 version = "0.1.0"
 authors = [
   { name = "Paul Chambaz", email = "paul.chambaz@example.com" },
@@ -23,7 +23,7 @@ classifiers = [
 "Bug Tracker" = "https://github.com/paulchambaz/canadian-salesman-problem/issues"
 
 [tool.setuptools]
-packages = ['cstp','cr']
+packages = ['cctp', 'cr']
 
 
 [tool.ruff]
@@ -68,4 +68,4 @@ max-complexity = 10 # Limit function complexity
 "test_*.py" = ["D"]      # Ignore docstring requirements in test files
 
 [tool.ruff.lint.isort]
-known-first-party = ["cstp"]
+known-first-party = ["cctp"]

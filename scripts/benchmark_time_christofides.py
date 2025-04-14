@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 from tqdm import tqdm
 
-from cstp import christofides, utils
+from cctp import christofides, utils
 
 
 def main():

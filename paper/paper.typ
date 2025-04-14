@@ -14,6 +14,10 @@
   ]
 )
 
+#show "Christofides": _ => smallcaps[Christofides]
+#show "CR": _ => smallcaps[Cr]
+#show "CNN": _ => smallcaps[Cnn]
+
 == Introduction
 
 Le problème du voyageur de commerce (_Traveling Salesman Problem_ ou _TSP_) constitue l'un des défis classiques en optimisation combinatoire. Dans sa formulation standard, on cherche à déterminer le parcours de longueur minimale permettant de visiter une seule fois chaque ville d'un ensemble donné avant de revenir au point de départ. Malgré sa simplicité d'énoncé, ce problème est $cal(N P)$-difficile.
@@ -67,7 +71,7 @@ Notre implémentation de l'algorithme de Christofides utilise _Python_ et la bib
 - le tour généré visite tous les sommets du graphe ;
 - le tour généré passe au plus une fois par chaque sommet.
 
-Pour assurer la robustesse de notre implémentation face à différentes configurations, nous avons également effectué 200 tests _fuzzy_ sur des graphes générés aléatoirement avec un nombre de sommet variant entre 4 et 256.
+Pour assurer la robustesse de notre implémentation face à différentes configurations, nous avons également effectué 1000 tests _fuzzy_ sur des graphes générés aléatoirement avec un nombre de sommet variant entre 4 et 256.
 
 === Cadre expérimental
 Pour évaluer empiriquement les performances de l'algorithmes, nous avons généré des graphes complets aléatoires respectant l'inégalité triangulaire. Chaque graphe est construit en plaçant $n$ points aléatoirement dans un espace euclidien à deux dimensions, avec des coordonnées tirées uniforméments dans $[-5.0, 5.0]$. Les distances entre les sommets corresponent aux distances euclidiennes, garantissant ainsi l'inégalité triangulaire.
@@ -100,7 +104,22 @@ La @fig-2 présente les résultats de cette analyse, avec le temps d'exécution 
 
 ==  Cr
 
-// TODO: écrire cette partie, mais ce n'est pas ma tache mais celle de mon binome
+L'idée derrière l'algorithme de Liao et al. est de partitionner le tour entier du graphe en plusieurs tours partiels. Dans chaque tour partiel, le voyageur canadien essaie de visiter un nombre maximum des noeuds non-visités dans le sens d'un tour de Christofides.  
+L'algorithme peut être utilisé si les conditions suivantes sont réunies :
+- un blockage ne change pas après être détecté par le voyageur
+- le graphe initial avec blockages enlevés reste un graphe connexe.
+
+=== Tests unitaires 
+
+=== Validité du chemin retourné 
+Pour valider que le chemin retourné par l'algorithme est une solution valide, on vérifie les trois conditions suivantes :
++ le tour commence et termine au même noeud
++ le tour contient tous les noeuds du graphe initial
++ le tour ne contient pas des chemins bloqués
+
+_Résultat_: Nos tests valident toutes les conditions indiqués pour des graphes de taille n avec n élément [4,256] et un nombre de blockages k, k élément [0,n-2], n et k tirés aléatoirement uniformement pour 200 itérations.
+
+=== Tests de performance
 
 == Cnn
 
@@ -147,6 +166,7 @@ c(T_"CNN") = c(T_S) + c(T_"NN") \
 $
 
 Ce qui établit le rapport d'approximation de $O(log k)$ pour l'algorithme CNN.
+#h(1fr) $qed$
 
 === Implémentation et validation
 Notre implémentation de l'algorithme CNN est disponible dans le fichier `cctp/cnn.py`. Pour valider la correction de l'implémentation, nous avons développé une suite de tests unitaires vérifiant que :
@@ -154,7 +174,7 @@ Notre implémentation de l'algorithme CNN est disponible dans le fichier `cctp/c
 - le tour généré visite tous les sommet du graphe ;
 - le tour ne contient aucune arête bloquée.
 
-Pour assurer la robustesse de notre implémentation face à différente configuration, nous avons egalement effectué 200 tests _fuzzy_ sur des graphes générés aléatoirement avec un nombre de sommet variant entre 4 et 256.
+Pour assurer la robustesse de notre implémentation face à différente configuration, nous avons egalement effectué 1000 tests _fuzzy_ sur des graphes générés aléatoirement avec un nombre de sommet variant entre 4 et 256.
 
 === Cadre expérimental
 Nous réutilisons ici les mêmes méthodes déjà utilisée durant les autres parties.
@@ -200,29 +220,137 @@ La @fig-cnn-time-k présente les résultats de cette analyse, avec le temps d'ex
   ]
 ) <fig-cnn-time-k>
 
-
-// parler de l'implementatentation et en particulier des tests unitaires faits pour valider les resultats
-// parler du setup experiment, rappeler rapidement comment on genere des graphes complets aleatoires de n noeuds et qui respecte l'inegalite triangulaires, parler de ce comment on genere une liste de k noeuds distincts qui seront bloques pendant l'execution
-// parler du rapport d'approximation, discuter le cas des tights bounds, montrer le graphique de ratio des tights bounds avec les methodes de regressions lineaires pour montrer empiriquement la tight bound a log(k) // TODO: lire l'article pour comprendre les tights bounds de CNN et les implementer // TODO: il faut etudier par rapport a n et par rapport a k, normalement O(log k) pour k et O(1) pour n
-// - parler de la complexite de cnn et montrer le graphique // TODO: il faut trouver la complexite reelle de CNN pour faire cela (dominée par celle de Christofides) donc probablement tres courte, il me semble que c'est genre O(n + k) donc O(n) (ou un truc du genre, probablement pas plus), de meme il faut etudier la complexite en fonction de k et en fonction de n
-
 == Comparaisons
 
-// TODO: ecrire la partie de comparative entre CR et CNN
-// on étudie 4 classes distinctes de graphes pour étudier le comportement des algorithmes
-//  - graphes basés sur des distances euclidiennes
-//  - graphes en grilles (Manhattan) avec inégalité triangulaire stricte
-//  - graphes fortement clusterisés (communautés avec distances courtes intra-cluster et longuers inter-clusters)
-//  - graphes basé sur des loi de puissances
-//  - graphes basés sur des données réelles
-// pour chaque classes de problème, étudier :
-//  - évolution du ratio d'approximation empirique en fonction de n
-//  - évolution du ratio d'approximation empirique en fonction de k
-//  - analyse du temps d'éxécution
-//  - breve analyse et discussion de la variation de l'iqm et du max mesuré.
-// discuter de l'avantage et désavantage de CR et CNN sur des cas pratiques.
-// proposer une recommendation générale sur quel algorithme à utiliser dans quel contexte
+Afin d'évaluer les perforamnces relatives des algorithmes CR et CNN dans différents contextes réels, nous anvons mené une analyse comparative détaillée sur cinq classes distinctes de graphes. Cette comparaison empirique vient compléter l'analyse théorique du rapport d'approximation présentée  dans les sections précédentes. Pour chaque classe de graphe, nous étudions l'évolution des performances en fonction de deux paramètres : le nombre de sommets $n$ et le nombre d'arêtes bloquées $k$.
 
-== Conclusion
+Notre protocole d'évalution mesure le rapport entre la distance parcourue par l'algorithme et celle qu'aurait parcourue un voyageur omniscient connaissant à l'avance l'emplacement de toutes les arêtes bloquées. Ce ratio, calculé sur de multiples instances (15 par configuration), permet de caractériser empiriquement le comportement moyen et la variabilité des performances des algorithmes.
 
-// TODO: resumer les resultats
+=== Graphe à poids constant
+Les graphes à poids constant représentent un cas particulier où toutes les arêtes ont un poids identique, fixé arbitrairement à 1. Ces graphes constituent une référence théorique importante car ils permettent d'isoler l'impact de la topologie du graphe sur les performances des algorithmes, indépendamment des variations de distance.
+
+#figure(
+  image("./figures/graphs_ratio_constant_n_plot.svg"),
+  caption: [
+    Évolution du rapport d'approximation des algorithmes CR et CNN sur des graphes à poids constant en fonction du nombre de sommet $n$. La courbe bleue représente la moyenne interquartile (IQM) des ratios CNN tandis que la courbe rouge représente celle des ratios CR. Les zones colorées correspondent aux intervalles interquartiles (IQ). Les mesures ont été effectuées avec un nombre fixe d'arêtes bloquées $k=n-2$ pour chaque valeur de $n$, sur 15 instances aléatoires par configuration.
+  ]
+) <fig-constant-n>
+
+Pour construire ces graphes, nous générons un graphe complet à $n$ sommets où chaque paire de sommets est reliée par une arête de poids 1. Cette structure satisfait l'inégalité triangulaire puisque le coût d'un chemin direct entre deux sommets est toujours inférieur à celui d'un chemin indirect.
+
+Les résultats présentés dans la @fig-constant-n montre que pour les petites valeurs de $n$, les deux algorithmes présentent des rapport d'approximation relativement élevés ($1.7$ pour CNN et $1.25$ pour CR), qui décroissent rapidement à mesure que $n$ augmente. Pour $n > 50$, les deux algorthmes convergent vers un rapport très proche de 1, ce qui indique une performance quasi-optimale.
+
+#figure(
+  image("./figures/graphs_ratio_constant_k_plot.svg"),
+  caption: [
+    Évolution du rapport d'approximation des algorithmes CR et CNN sur des graphes à poids constant en fonction du nombre d'arêtes bloquées $k$. La courbe bleue représente la moyenne interquartile (IQM) des ratios CNN, tandis que la courbe rouge représente celle des ratios CR. Les zones colorées correspondent aux intervalles interquartiles (IQ). Les mesures ont été effectuées avec un nombre fixe de sommets $n = 256$, sur 15 instances aléatoires par configuration.
+  ]
+) <fig-constant-k>
+
+La @fig-constant-k montre quant à elle que CR maintient un rapport d'approximation constant de $1$ quelle que soit la valeur de $k$ tandis que CNN présente quelques fluctuations limitées en fonction de $k$. On note tout de meme que même dans les pire des cas, CNN ne monte que jusqu'à $1.004$, ce qui reste très proche de l'optimal et correspond aux observations faites sur le précédent graphe.
+
+=== Graphes euclidiens
+Les graphes euclidiens constituent une classe importante pour les applications réelles de planification d'itinéraire. Dans ces graphes, les sommets représentent des points dans un espace euclidien à deux dimensions, et les poids des arêtes correspondent aux distances euclidiennes entre ces deux points.
+
+#figure(
+  image("./figures/graphs_ratio_euclidian_n_plot.svg"),
+  caption: [
+    Évolution du rapport d'approximation des algorithmes CR et CNN sur des graphes euclidien en fonction du nombre de sommet $n$. La courbe bleue représente la moyenne interquartile (IQM) des ratios CNN tandis que la courbe rouge représente celle des ratios CR. Les zones colorées correspondent aux intervalles interquartiles (IQ). Les mesures ont été effectuées avec un nombre fixe d'arêtes bloquées $k=n-2$ pour chaque valeur de $n$, sur 15 instances aléatoires par configuration.
+  ]
+) <fig-euclidian-n>
+
+Pour construire ces graphes, nous générons $n$ points avec des coordonnées aléatoires uniformément distribuées, dans l'intervalle $[-5, 5]^2$. Nous créons ensuite une graphe complet où le poids de chaque arête est la distance euclidienne entre les sommets correspondants. Cette méthode garantit que l'inégalité triangulaire est respectée, pusique dans un espace euclidien, la distance directe entre deux points est toujours inférieure ou égale à la somme des distances via un point intermédiaire.
+
+La @fig-euclidian-n montre que les rapports d'approximation de CR et CNN suivent des trajectoirs similaires, diminuant rapidement avec l'augmentation de $n$ jusqu'à atteindre un plateau autour de $1.1$ pour les grandes valeurs de $n$. Cette convergence s'explique par le fait que lorsque le nombre de sommets augument, la probabilité qu'une arete bloquée se trouve sur le chemin optimal diminue, réduisant ainsi l'impact des blocages sur la performance globale.
+
+#figure(
+  image("./figures/graphs_ratio_euclidian_k_plot.svg"),
+  caption: [
+    Évolution du rapport d'approximation des algorithmes CR et CNN sur des graphes euclidien en fonction du nombre d'arêtes bloquées $k$. La courbe bleue représente la moyenne interquartile (IQM) des ratios CNN, tandis que la courbe rouge représente celle des ratios CR. Les zones colorées correspondent aux intervalles interquartiles (IQ). Les mesures ont été effectuées avec un nombre fixe de sommets $n = 256$, sur 15 instances aléatoires par configuration.
+  ]
+) <fig-euclidian-k>
+
+La @fig-euclidian-k révèle une autre tendance : les performances des deux algorithmes se dégradente progressivement à mesure que $k$ augmente, avec une variabilité croissante. Cette détérioration progressive a du sens, plus le nombre d'arête bloquées est élevé, plus les détours nécessaires sont fréquents et potentiellement coûteux. On note en particulier que, bien que CR et CNN utilisent des méthodes très différentes, les performances sont très similaires, ce qui suggère des solutions proches de l'optimal.
+
+=== Graphe de Manhattan
+Les graphe en grille avec distances de Manhattan représentent un modèle particulièrement pertinent pour la planficiation d'iténéraires urbains, où les déplacements s'effectuent généralement selon une structure en quadrillage.
+
+#figure(
+  image("./figures/graphs_ratio_manhattan_n_plot.svg"),
+  caption: [
+    Évolution du rapport d'approximation des algorithmes CR et CNN sur des graphes de Manhattan en fonction du nombre de sommet $n$. La courbe bleue représente la moyenne interquartile (IQM) des ratios CNN tandis que la courbe rouge représente celle des ratios CR. Les zones colorées correspondent aux intervalles interquartiles (IQ). Les mesures ont été effectuées avec un nombre fixe d'arêtes bloquées $k=n-2$ pour chaque valeur de $n$, sur 15 instances aléatoires par configuration.
+  ]
+) <fig-manhattan-n>
+
+Pour construire ces graphes, nous générons une grille de $n$ sommets disposé régulièrement dans un espace bidimmensionnel, formant une grille carrée. Chaque sommet est relié à tous les autres sommets, et le poids d'une arête entre deux sommets correspond à leur distance de Manhattan, c'est-à-dire la somme des différences absolues de leur coordonnées. Cette métrique respecte l'inégalité triangulaire.
+
+#figure(
+  image("./figures/graphs_ratio_manhattan_k_plot.svg"),
+  caption: [
+    Évolution du rapport d'approximation des algorithmes CR et CNN sur des graphes de Manhattan en fonction du nombre d'arêtes bloquées $k$. La courbe bleue représente la moyenne interquartile (IQM) des ratios CNN, tandis que la courbe rouge représente celle des ratios CR. Les zones colorées correspondent aux intervalles interquartiles (IQ). Les mesures ont été effectuées avec un nombre fixe de sommets $n = 256$, sur 15 instances aléatoires par configuration.
+  ]
+) <fig-manhattan-k>
+
+La @fig-manhattan-n révèle que les rapports d'approximation sont particlièrement élevés ($2.25$ pour CNN et $1.7$ pour CR), mais diminuent rapidement avec l'augmentation de $n$ pour se stabiliser autour de $1.1$. Cette diminution rapide s'explique par la multiplication des chemins alternatifs disponibles lorsque la taille de la grille augumente, offrant plus d'options pour contourner les aretes bloquées.
+
+La @fig-manhattan-k montre une flucturation plus importante des performances par rapport aux autres classes de graphes. Pour les faibles valeurs de $k$, le deux algorithmes présentent des performances similaires, proche de l'optimal. Cependant avec l'augmentation de $k$, les performances se dégradent avec une variabilité accrue, tout en restant globalement sous un ratio de $1.15$. Cette variabilité accrue peut s'expliquer par la structure particulière des grilles, où le blocage de certaines arêtes stratégique peut forcer des détours considérables, tandis que le blocage d'autres arêtes peut avoir un impact minimal. On note que ces résultats correspondent à l'intuition des touristes dans des villes comme Manhattan, où des voies bloquées forcent un détour complet du bloc, qui représente un grand détour.
+
+=== Graphe fortement clusterisés
+Les graphes fortement clusterisés modélisent des réseaux présentant une structure communautaire prononcée, où des groupes de sommets sont fortement interconnectés, tandis que les connexions entre groupes sont plus rares ou plus coûteuses. Ce type de structure se retrouve dans de nombreux réseaux réels, notamment les réseaux de transport régionaux avec des zones urbaines denses reliées par des axes interurbains.
+
+Pour construire ces graphes, nous générons un ensemble de clusters, chacun contenant un nombre de sommet pour arriver à un total de $n$ sommets. Les centres des clusters sont positionnés aléatoirement dans l'espace, mais à des distances significatives les uns des autres (facteur multiplicatif de $20$). Les sommets des chaque cluster sont ensuite positionnés dans un voisinage proche de leur centre de cluster (distance maximale de $1$). Cette construction génère naturellement des communcautés distinctes avec des distances intra-cluster faibles et des distances inter-clusters élevées.
+
+La @fig-clustered-n présente le profil d'évolution suivant : pour les petites valeurs de $n$, les rapport d'approximation sont élevés (jusqu'à $1.8$ pour CNN et $1.7$ pour CR), puis diminuent rapidement avant de se stabiliser autour de $1.3$, soit une valeur plus élevée que pour d'autres classes de graphes. Cette stabilisation à un niveau supérieur s'explique par la structure clusterisée : lorsqu'une arête inter-clusters est bloquée, les détours nécessaires sont substantiellement plus coûteux.
+
+#figure(
+  image("./figures/graphs_ratio_clustered_n_plot.svg"),
+  caption: [
+    Évolution du rapport d'approximation des algorithmes CR et CNN sur des graphes fortement clusterisés en fonction du nombre de sommet $n$. La courbe bleue représente la moyenne interquartile (IQM) des ratios CNN tandis que la courbe rouge représente celle des ratios CR. Les zones colorées correspondent aux intervalles interquartiles (IQ). Les mesures ont été effectuées avec un nombre fixe d'arêtes bloquées $k=n-2$ pour chaque valeur de $n$, sur 15 instances aléatoires par configuration.
+  ]
+) <fig-clustered-n>
+
+La @fig-clustered-k révèle un comportement encore plus étonnant, avec un seuil critique autour de $k = 100$. En dessous ce ce seuil, les deux algorithmes maitiennent des performances proches de l'optimal. Au-delà, les perforamnces se dégradent rapidement, avec une grande variabilité. Ce phénomène de seuil peut s'expliquer par la transition entre un régime où les blocages affectent principalement des aretes intra-cluster (facilement contournables) et un régime où les blocages commencent à impacter les arêtes inter-clusters critiques, nécessitant des détours considérables.
+
+
+#figure(
+  image("./figures/graphs_ratio_clustered_k_plot.svg"),
+  caption: [
+    Évolution du rapport d'approximation des algorithmes CR et CNN sur des graphes fortement clusterisés en fonction du nombre d'arêtes bloquées $k$. La courbe bleue représente la moyenne interquartile (IQM) des ratios CNN, tandis que la courbe rouge représente celle des ratios CR. Les zones colorées correspondent aux intervalles interquartiles (IQ). Les mesures ont été effectuées avec un nombre fixe de sommets $n = 256$, sur 15 instances aléatoires par configuration.
+  ]
+) <fig-clustered-k>
+
+=== Graphes basés sur des lois de puissance
+Les graphes basés sur des lois de puissance modélisent des réseaux où la distribution des poids suit une loi de puissance, caractéristique de nombreux phénomènes naturels et sociaux. Dans ces graphes, quelques sommets jouent le rôle de _hubs_ centraux, tandis que la majorité des sommets sont périphériques.
+
+Pour construire ces graphes, nous positionnons les sommets selon un distribution radiale où la distance au centre est proportionnelle à $((i+1)/n)^(1/2.5) times 10$, où $i$ est l'indice du sommet et $n$ le nombre total de sommets. L'ange est choisi aléatoirement entre $0$ et $2 pi$. Les arêtes reliant tous les sommets, avec des poids égaux aux distances euclidiennes, préservant ainsi l'inégalité triangulaire.
+
+#figure(
+  image("./figures/graphs_ratio_power_law_n_plot.svg"),
+  caption: [
+    Évolution du rapport d'approximation des algorithmes CR et CNN sur des graphes basés sur des lois de puissance en fonction du nombre de sommet $n$. La courbe bleue représente la moyenne interquartile (IQM) des ratios CNN tandis que la courbe rouge représente celle des ratios CR. Les zones colorées correspondent aux intervalles interquartiles (IQ). Les mesures ont été effectuées avec un nombre fixe d'arêtes bloquées $k=n-2$ pour chaque valeur de $n$, sur 15 instances aléatoires par configuration.
+  ]
+) <fig-power-law-n>
+
+La @fig-power-law-n montre un comportement similaire à celui des graphes euclidiens : un rapport d'approximation initial élevé (environ $1.7$ pour CNN et $1.35$ pur CR) qui diminue rapidement avec l'augmentation de $n$ pour se stabiliser autour de $1.1$. Cette convergence reflète la robustesse des deux algorithmes face à la structure en hub des graphes en loi de puissance.
+
+Le @fig-power-law-k révèle une dégradation progressive mais limitée des performances avec l'augmentation de $k$. Pour $k < 100$, les deux algorithmes maitiennent des perforamnces proches de l'optimal. Au-delà, les performances se dégradent progressivement, mais de manière plus contenue que pour d'autres classes de graphes, les ratios restant inférieurs à $1.12$. Cette robustesse relative s'explique par la présence de hubs qui offrent de multiples chemins alternatifs, limitant l'impact des blocages individuels.
+
+#figure(
+  image("./figures/graphs_ratio_power_law_k_plot.svg"),
+  caption: [
+    Évolution du rapport d'approximation des algorithmes CR et CNN sur des graphes basés sur des lois de puissance en fonction du nombre d'arêtes bloquées $k$. La courbe bleue représente la moyenne interquartile (IQM) des ratios CNN, tandis que la courbe rouge représente celle des ratios CR. Les zones colorées correspondent aux intervalles interquartiles (IQ). Les mesures ont été effectuées avec un nombre fixe de sommets $n = 256$, sur 15 instances aléatoires par configuration.
+  ]
+) <fig-power-law-k>
+
+=== Analyse comparative
+Notre analyse empirique sur ces cinq classes de graphes permet de dégager plusieurs remarques sur le choix d'un algorithme en fonction du contexte de l'application.
+
+L'algorithme CR présente généralement des performances légèrement meilleures que CNN pour les faibles valeurs de $k$, particulièrement sur les graphes à poids constnat et les graphes euclidiens. Sa simplicité conceptuelle et sa robustesse en font un excellent choix pour les applications où le nombre de d'obstacle est prévisible et limité.
+
+L'algorithme CNN, bien qu'ayant généralement une performance légèrement inférieures est plus stable face à l'augmentation du nombre d'arêtes bloquées, grâce a sa garantie en $O(log k)$.
+
+On note cependant que nous n'avons pas pu observer sur les classes de graphes et les tailles d'instances un cas ou CNN est meilleur que CR de façon significatif. Ce résultat peut s'expliquer de différentes façons. D'une part, le type de graphe que nous étudions ne permet pas d'exhiber une telle différence. D'autre part, les tailles d'instances que nous avons fait ne permettent pas de voir une grande différence. Finalement, on note que la performance de CR et CNN est très proche, ce qui suggère que les deux algorithmes trouvent en pratique des solutions très proche de l'optimal à atteindre.
+
+Compte tenu de ces observations, il paraît adapté d'utiliser CR dans les contextes où le nombre d'obstacle est faible par rapport à la taille du réseau et d'opter pour CNN dans les environnements où les blocages peuvent être nombreux ou imprévisibles. On note en particulier que ces deux algorithmes tournent en temps polynomial, il est donc tout à fait possible de calculer le tour proposé par les deux algorithmes et de prendre le meilleur rapport d'approximation, dans la plupart des cas, CR sera sans doute utilisé, mais CNN garantit une bien meilleure complexité théorique lorsque $k$ est grand.
+
+En conclusion, bien que la théorie suggère que CNN devrait systématiquement surpasser CR avec l'augmentation de $k$, notre analyse empirique montre que cette supériorité n'est pas toujours manifeste sur les instances pratiques, et que le choix entre ces deux algorithmes doit tenir compte des caractéristiques spécifiques du problème à résoudre.
