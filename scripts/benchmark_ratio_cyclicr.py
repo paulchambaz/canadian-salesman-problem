@@ -20,7 +20,7 @@ def main():
     sizes = np.arange(min_k, max_k + 1, step)
     results = {"seed": seed, "sizes": sizes, "data": {}}
 
-    for k in tqdm(sizes, desc="Benchmarking cnn ratio"):
+    for k in tqdm(sizes, desc="Benchmarking cr ratio"):
         ratios = []
         for _ in tqdm(range(repeats), desc=f"Testing k={k}", leave=False):
             graph = utils.create_random_graph(max_k + 2)
@@ -35,7 +35,7 @@ def main():
         results["data"][k] = {**stats, "ratios": ratios}
 
     Path("results").mkdir(exist_ok=True)
-    filename = "results/cyclic_ratio_k_results.pk"
+    filename = "results/cr_ratio_k_results.pk"
     with open(filename, "wb") as f:
         pickle.dump(results, f)
 

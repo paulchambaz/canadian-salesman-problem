@@ -6,6 +6,28 @@ import networkx as nx
 from .types import Edge
 from .utils import create_complete_graph_from_points, create_random_graph
 
+def cr_tight_bound_graph(p: int) -> tuple[nx.Graph, set[Edge]]:
+    tight_bound_graph = nx.Graph()
+    positions = [(0,0),(1,1),(1,0)]
+    positions *= p / 3
+    print(positions)
+    tight_bound_graph = create_complete_graph_from_points(positions)
+    for i in range(0,p,3):
+        tight_bound_graph.add_node(i, pos=(0,0))
+        if i > 0:
+            tight_bound_graph.add_node(i-1, i,weight=1)
+
+        tight_bound_graph.add_node(i+1, pos=(1,1))
+        tight_bound_graph.add_node(i+2, pos=(1,0))
+        tight_bound_graph.add_edge(i,i+1,weight=1)
+        tight_bound_graph.add_edge(i+1,i+2,weight = 1)
+    complete_graph = nx.complete_graph(p)
+    edge_list_complete = set(complete_graph.edges())
+    edge_list_tight_bound = set(tight_bound_graph.edges())
+    blocked_list = edge_list_complete-edge_list_tight_bound
+    return 
+
+
 
 def cnn_tight_bound_graph(p: int) -> tuple[nx.Graph, set[Edge]]:
     """Create a graph that demonstrates the tight bound for CNN algorithm.

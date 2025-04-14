@@ -28,7 +28,7 @@ Pour valider que le chemin retourné par l'algorithme est une solution valide, o
 + le tour commence et termine au même noeud
 + le tour contient tous les noeuds du graphe initial
 + le tour ne contient pas des chemins bloqués
-*Résultat*: Nos tests valident toutes les conditions indiqués pour des graphes de taille n avec n élément [4,256] et un nombre de blockages k, k élément [0,n-2], n et k tirés aléatoirement uniformement pour 200 itérations.
+*Résultat*: Nos tests valident toutes les conditions indiqués pour des graphes de taille n avec n élément [4,256] et un nombre de blockages k, k élément [0,n-2], n et k tirés aléatoirement uniformement pour 200 itérationsxx.
 
 === Tests de performance
 

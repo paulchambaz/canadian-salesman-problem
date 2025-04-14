@@ -100,7 +100,52 @@ La @fig-2 présente les résultats de cette analyse, avec le temps d'exécution 
 
 ==  Cr
 
-// TODO: écrire cette partie, mais ce n'est pas ma tache mais celle de mon binome
+L'algorithme CR (Cyclic Routing) de C.-S. Liao et Y. Huang permet de résoudre le problème du voyageur candien avec un rapport d'approximation de $O(sqrt(k))$. 
+
+=== Description de l'algorithme
++ Calcul d'un tour initial par l'algorithme de Christofides $P$
++ Tant qu'il restent des noeuds non-visités : parcourir le graphe $P$ en appliquant la procédure `shortcut` dans le sens de visite de $P$, changer le sens de visite si nécessaire
+Après l'application de `shortcut`, le sens de visite change si :
+- le nombre de noeuds non-visités n'a pas deminiué
+- l'itération précédente de `shortcut` s'est arrêtée avant d'atteindre le dernier noeud non-visité 
+
+L'algorithme `shortcut` se déroule en deux phases principales :
++ assumer que toutes les noeuds non-visités sont accessibles 
++ tant qu'il restent des noeuds non visités et accessibles : essayer d'atteindre le noeud non-visité le plus proche, si nécessaire par des noeud intermédiaires (toujours dans le sens de visite)
+
+==== Théorème
+Le ratio d'approximation de CR est de $O(sqrt(k))$.
+
+==== Preuve
+Soit $E_i$ une liste des blockages découvertes dans l'itération $i$ de l'algorithme CR, et soit $m^"cr"$ le nombre total d'itérations. Comme le voyageur candien ne redécourvre jamais un blockage qu'il connaît déjà le nombre total de blockages $k$ est borné par :
+
+$ |E_1|+|E_2|+...+|E_(m^"cr")|<=k $
+
+Soit $V_m$ une liste de noeuds non-visités lors de l'itération $m$. Pour chaque blockage découvert l'lors de l'itération $m$, au moins un noeud est supprimé de la liste des noeuds non-visités $V_(m+1)$, d'où :  
+
+$ |V_2| + |V_3|+...+|V_(m^("cr"+1))|<= \
+  |E_1|+|E_2|+...+|E_(m^("cr"))| $
+
+avec dans le pire cas $|V_m \\ V_(m+1)| = 1$, $|V_2|=m^"cr"-1$ et $|V_(m^("cr"+1))| = 0$. En utilisant la formule de la Somme de Gauss, on obtient :
+
+$ ((1 + (m_"cr" − 1))(m_"cr" − 1)) / 2 <= k \
+  => m_"cr" <= floor((1+sqrt(1+8k))/2) \
+ $
+
+ Soit $d(P^"cr")$ le tour final retourné par l'algorithme CR. Le coût total de ce tour est borné par :
+
+ $ d(P^"cr") <= (3m^"cr"+1)"OPT, avec" m^"cr" = O(sqrt(k)) $
+
+ Par conséquent, le ratio d'approximation de l'algorithme CR est de $O(sqrt(k))$.#h(1fr) $qed$
+
+=== Implémentation et validation
+L'implémentation de l'algorithme CR est disponible dans le fichier `cstp/cr.py` et consiste de trois fonctions principales : 
+- `canadian_traveller_cyclic_routing` : En utilisant l’algorithme de Christofides, cette fonction calcule un tour $T$ et renomme ensuite tous les sommets et blocages du graphe initial pour que leur ordre reflète celui du parcours, de façon croissante
+- `cyclic_routing` et `shortcut` implémentent la fonctionnalité décrite ci-dessus
+Pour valider la correction de l'implémentation, nous procédons de la même manière que pour l'algorithme de Christofides. En plus, nous vérifions que le graphe retourné par l'algorithme CR ne contient pas d'arrêts bloqués. 
+
+=== Cadre expérimental
+Nous réutilisons ici les mêmes méthodes déjà utilisée durant les autres parties.
 
 == Cnn
 
@@ -151,10 +196,10 @@ Ce qui établit le rapport d'approximation de $O(log k)$ pour l'algorithme CNN.
 === Implémentation et validation
 Notre implémentation de l'algorithme CNN est disponible dans le fichier `cctp/cnn.py`. Pour valider la correction de l'implémentation, nous avons développé une suite de tests unitaires vérifiant que :
 - le tour commence et se termine au même sommet ;
-- le tour généré visite tous les sommet du graphe ;
-- le tour ne contient aucune arête bloquée.
+- le tour généré visite tous les sommets du graphe ;
+- le tour généré passe au plus une fois par chaque sommet.
 
-Pour assurer la robustesse de notre implémentation face à différente configuration, nous avons egalement effectué 200 tests _fuzzy_ sur des graphes générés aléatoirement avec un nombre de sommet variant entre 4 et 256.
+Pour assurer la robustesse de notre implémentation face à différentes configurations, nous avons également effectué 200 tests _fuzzy_ sur des graphes générés aléatoirement avec un nombre de sommet variant entre 4 et 256.
 
 === Cadre expérimental
 Nous réutilisons ici les mêmes méthodes déjà utilisée durant les autres parties.

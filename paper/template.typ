@@ -15,6 +15,7 @@
   set text(size: 11pt, lang: "fr", font: "New Computer Modern")
 
   show math.equation: set block(breakable: true)
+  
 
   set enum(numbering: "1. a.")
   set list(marker: [--])
