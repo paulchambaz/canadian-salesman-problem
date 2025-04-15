@@ -1,7 +1,7 @@
-"""CNN-CCTP solves constrained TSP with blocked edges.
+"""Christofides Nearest Neighbour solves constrained TSP with blocked edges.
 
 This module implements the Constrained Nearest Neighbor (CNN) algorithm for
-the Constrained Chinese Traveling Purchaser Problem (CCTP) with blocked edges.
+the Covering Canadian Travaller Problem (CCTP) with blocked edges.
 """
 
 import networkx as nx
@@ -16,7 +16,7 @@ def cnn_cctp(
     blocked_edges: set[Edge] = None,
     tour: Path = None,
 ) -> tuple[Path, Weight]:
-    """Find a near-optimal path avoiding blocked edges using CNN-CCTP.
+    """Find a near-optimal path avoiding blocked edges using CNN.
 
     Implements a four-phase approach:
     1. Generate initial tour using Christofides algorithm

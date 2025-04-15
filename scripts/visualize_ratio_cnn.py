@@ -80,8 +80,6 @@ def main():
 
     plt.savefig("paper/figures/cnn_ratio_plot.svg", bbox_inches="tight")
 
-    # plt.show()
-
 
 if __name__ == "__main__":
     main()

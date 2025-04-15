@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 from tqdm import tqdm
 
-from cctp import christofides, cnn, utils
+from cctp import christofides, cr, utils
 
 
 def benchmark_n():
@@ -29,14 +29,14 @@ def benchmark_n():
             blocked_edges = utils.create_random_blocks(n - 2, graph)
             tour, _ = christofides.christofides_tsp(graph)
             start = time.time()
-            _, _ = cnn.cnn_cctp(graph, blocked_edges, tour)
+            _, _ = cr.cr_cctp(graph, blocked_edges, tour)
             runtimes.append(time.time() - start)
 
         stats = utils.compute_stats(runtimes)
         results["data"][n] = {**stats, "runtimes": runtimes}
 
     Path("results").mkdir(exist_ok=True)
-    filename = "results/cnn_runtime_n_results.pk"
+    filename = "results/cr_runtime_n_results.pk"
     with open(filename, "wb") as f:
         pickle.dump(results, f)
 
@@ -61,14 +61,14 @@ def benchmark_k():
             blocked_edges = utils.create_random_blocks(n, graph)
             tour, _ = christofides.christofides_tsp(graph)
             start = time.time()
-            _, _ = cnn.cnn_cctp(graph, blocked_edges, tour)
+            _, _ = cr.cr_cctp(graph, blocked_edges, tour)
             runtimes.append(time.time() - start)
 
         stats = utils.compute_stats(runtimes)
         results["data"][n] = {**stats, "runtimes": runtimes}
 
     Path("results").mkdir(exist_ok=True)
-    filename = "results/cnn_runtime_k_results.pk"
+    filename = "results/cr_runtime_k_results.pk"
     with open(filename, "wb") as f:
         pickle.dump(results, f)
 

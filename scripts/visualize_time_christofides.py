@@ -6,7 +6,6 @@ from scipy.optimize import curve_fit
 
 
 def main():
-<<<<<<< HEAD:scripts/visualize_time_christofides.py
     plt.rcParams.update(
         {
             "text.usetex": True,
@@ -21,9 +20,6 @@ def main():
     )
 
     with open("results/christofides_runtime_results.pk", "rb") as f:
-=======
-    with open("results/christofides_runtime_results_p.pk", "rb") as f:
->>>>>>> 461931bbff81c3a1208f7ebf6850ef98b51afd4f:scripts/visualize_christofides.py
         results = pickle.load(f)
 
     sizes = results["sizes"]
@@ -54,15 +50,15 @@ def main():
         cube_roots_q1,
         cube_roots_q3,
         alpha=0.2,
-        color="#3498db",
+        color="#64a34f",
         label=r"Racine cubique de l'IQ",
     )
 
     plt.plot(
         sizes,
         cube_roots_iqm,
-        "o-",
-        color="#3498db",
+        "^-",
+        color="#64a34f",
         linewidth=2,
         label="Racine cubique de la moyenne IQ",
     )
@@ -87,8 +83,6 @@ def main():
     plt.tight_layout()
 
     plt.savefig("paper/figures/christofides_time_plot.svg", bbox_inches="tight")
-
-    # plt.show()
 
 
 if __name__ == "__main__":

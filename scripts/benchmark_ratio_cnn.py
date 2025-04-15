@@ -5,7 +5,7 @@ from pathlib import Path
 import numpy as np
 from tqdm import tqdm
 
-from cstp import christofides, cnn, graphs, utils
+from cctp import christofides, cnn, graphs, utils
 
 
 def main():

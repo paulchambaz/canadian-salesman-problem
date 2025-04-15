@@ -2,11 +2,11 @@ import random
 
 from tqdm import tqdm
 
-from cstp import christofides, utils
+from cctp import christofides, utils
 
 
 def main():
-    n_instances: int = 200
+    n_instances: int = 1000
 
     for _ in tqdm(range(n_instances)):
         n: int = int(random.uniform(4, 256))
