@@ -146,11 +146,29 @@ $ ((1 + (m_"cr" − 1))(m_"cr" − 1)) / 2 <= k \
 L'implémentation de l'algorithme CR est disponible dans le fichier `cstp/cr.py` et consiste de trois fonctions principales : 
 - `canadian_traveller_cyclic_routing` : En utilisant l’algorithme de Christofides, cette fonction calcule un tour $T$ et renomme ensuite tous les sommets et blocages du graphe initial pour que leur ordre reflète celui du parcours, de façon croissante
 - `cyclic_routing` et `shortcut` implémentent la fonctionnalité décrite ci-dessus
-Pour valider la correction de l'implémentation, nous procédons de la même manière que pour l'algorithme de Christofides. En plus, nous vérifions que le graphe retourné par l'algorithme CR ne contient pas d'arrêts bloqués. 
+Pour valider la correction de l'implémentation, nous procédons de la même manière que pour l'algorithme de Christofides. En plus, nous vérifions que le graphe retourné par l'algorithme CR ne contient pas d'arêtes bloquées. 
 
 === Cadre expérimental
 Nous réutilisons ici les mêmes méthodes déjà utilisée durant les autres parties.
 
+=== Analyse de complexité
+Comme nous avons déjà analysé la complexité de l'algorithme de Christofides, notre analyse se concentre uniquement sur le temps d'exécution de CR après le calcul du tour initial.
+
+#figure(
+  image("figures/cr_time_plot_n.svg"),
+  caption: [
+  Évolution du temps d'exécution de l'algorithme CR sur des instances du TSP générées aléatoirement en fonction du nombre de sommet (15 mesures par taille). La courbe bleue représente la moyenne interquartile et la zone bleutée l'intervalle interquartile. La courbe noire représente le résultat de la regréssion linéaire sur les racines cubiques des IQM, $R^2$ représente le cohéfficient de linéarité, avec des valeur proches de $1$ indiquant une forte corrélation linéaire. On fixe $k$ à $n-2$.
+  ]
+) <fig-cr-time-n>
+
+#figure(
+  image("figures/cr_time_plot_k.svg"),
+  caption: [
+  Évolution du temps d'exécution de l'algorithme CR sur des instances du TSP générées aléatoirement en fonction du nombre de sommet (25 mesures par taille). La courbe bleue représente la moyenne interquartile et la zone bleutée l'intervalle interquartile. La courbe noire représente le résultat de la regréssion linéaire sur les racines cubiques des IQM, $R^2$ représente le cohéfficient de linéarité, avec des valeur proches de $1$ indiquant une forte corrélation linéaire. On fixe $n$ à $258$.
+  ]
+) <fig-cr-time-k>
+
+La @fig-cr-time-n présente les résultats du temps d'exécution de CR en fonction du nombre de sommets. Comme k est fixé à $n-2$, s'attend à un rapport d'approximation de $O(sqrt(n))$ ce qui est confirmé par la régression linéaire avec un coefficient de linéarité $R^2$ proche de 1. La même observation peut être fait pour le rapport d'approximation en fonction du nombre d'arêtes bloquées (voir @fig-cr-time-k).
 == Cnn
 
 L'algorithme CNN (Christofides Nearest Neighbor) représente une amélioration par rapport à l'algorithme CR, offrant un rapport d'approximation de $O(log k)$ et découvert par N. Hahn et M. Xefteris.

@@ -6,7 +6,7 @@ from scipy.optimize import curve_fit
 
 
 def visualize_n():
-    with open("results/cr_runtime_n_results.pk", "rb") as f:
+    with open("results/cr_runtime_n_results_p.pk", "rb") as f:
         results = pickle.load(f)
 
     sizes = results["sizes"]
@@ -70,10 +70,11 @@ def visualize_n():
     plt.tight_layout()
 
     plt.savefig("paper/figures/cr_time_plot_n.svg", bbox_inches="tight")
+    plt.show()
 
 
 def visualize_k():
-    with open("results/cr_runtime_k_results.pk", "rb") as f:
+    with open("results/cr_runtime_k_results_p.pk", "rb") as f:
         results = pickle.load(f)
 
     sizes = results["sizes"]
@@ -128,15 +129,16 @@ def visualize_k():
     plt.grid(True, alpha=0.3)
     plt.xlabel("Nombre de sommet bloqué (k)")
     plt.ylabel("Racine carré du temps d'exécution")
-    plt.legend()
-
+    plt.legend(loc ='upper left')
+    print(r_squared)
     plt.annotate(
-        rf"$R^2$ = {r_squared:.4f}", xy=(0.7, 0.05), xycoords="axes fraction"
+        rf"$R^2$ = {r_squared:.4f}", xy=(0.68, 0.05), xycoords="axes fraction"
     )
 
     plt.tight_layout()
 
     plt.savefig("paper/figures/cr_time_plot_k.svg", bbox_inches="tight")
+    plt.show()
 
 
 def main():
