@@ -56,7 +56,7 @@ L'algorithme de #smallcaps[Christofides] fonctionne par constructions intérméd
 
 Montrons que $c(T) <= OPT$. Soit $C^*$ un cycle hamiltonien optimal. En supprimant une arête quelconque de $C^*$, nous obtenons un arbre couvrant $T'$. Puisque $T$ est un arbre couvrant de poids minimal, nous avons : $c(T) <= c(T') <= OPT$.
 
-Montrons que $c(M) <= OPT/2$. Soit $O subset V$ l'ensemble des sommets de degré impair dans $T$. D'après le lemme des poignées de mains, qui stipule "chaque graphe non orienté fini a un nombre pair de sommets de degré impair", $|O|$ est pair. Considérons le cycle hamiltonien optimal $C^*$. En parcourant $C^*$ de manière alternée, nous pouvons partitionner ses arêtes en deux ensembles $E_1$ et $E_2$ tels que chaque ensemble forme une collection de chemins dont les extremités sont exactement les sommets de $O$ et $c(E_1) + c(E_2) = OPT$. Par conséquent, l'un de ces ensembles, disons $E_1$, a un coût au plus égal à $OPT/2$. Les chemins dans $E_1$ induisent un couplage valide $M'$ entre les sommets de $O$. En vertu de l'inégalité triangulaire, le coût de ce couplage $M'$ est au plus égal au coût des chemins correspodnants dans $E_1$. Pusique $M$ est un couplage parfait de poids minimal entre les sommets de $O$, nous avons : $c(M) <= c(M') <= c(E_1) <= OPT/2$.
+Montrons que $c(M) <= OPT/2$. Soit $O subset V$ l'ensemble des sommets de degré impair dans $T$. D'après le lemme des poignées de mains, qui stipule "chaque graphe non orienté fini a un nombre pair de sommets de degré impair", $|O|$ est pair. Considérons le cycle hamiltonien optimal $C^*$. En parcourant $C^*$ de manière alternée, nous pouvons partitionner ses arêtes en deux ensembles $E_1$ et $E_2$ tels que chaque ensemble forme une collection de chemins dont les extrémités sont exactement les sommets de $O$ et $c(E_1) + c(E_2) = OPT$. Par conséquent, l'un de ces ensembles, disons $E_1$, a un coût au plus égal à $OPT/2$. Les chemins dans $E_1$ induisent un couplage valide $M'$ entre les sommets de $O$. En vertu de l'inégalité triangulaire, le coût de ce couplage $M'$ est au plus égal au coût des chemins correspodnants dans $E_1$. Pusique $M$ est un couplage parfait de poids minimal entre les sommets de $O$, nous avons : $c(M) <= c(M') <= c(E_1) <= OPT/2$.
 
 Le coût du multigraphe eulérien $H$ est donc : $c(H) = c(T) + c(M) <= OPT + OPT/2 = 3/2 dot OPT$.
 
@@ -71,10 +71,10 @@ Notre implémentation de l'algorithme de #smallcaps[Christofides] utilise _Pytho
 - le tour généré visite tous les sommets du graphe ;
 - le tour généré passe au plus une fois par chaque sommet.
 
-Pour assurer la robustesse de notre implémentation face à différentes configurations, nous avons également effectué 1000 tests _fuzzy_ sur des graphes générés aléatoirement avec un nombre de sommet variant entre 4 et 256.
+Pour assurer la robustesse de notre implémentation face à différentes configurations, nous avons également effectué 1000 tests _fuzzy_ sur des graphes générés aléatoirement avec un nombre de sommets variant entre 4 et 256.
 
 === Cadre expérimental
-Pour évaluer empiriquement les performances de l'algorithmes, nous avons généré des graphes complets aléatoires respectant l'inégalité triangulaire. Chaque graphe est construit en plaçant $n$ points aléatoirement dans un espace euclidien à deux dimensions, avec des coordonnées tirées uniformément dans $[-5.0, 5.0]$. Les distances entre les sommets corresponent aux distances euclidiennes, garantissant ainsi l'inégalité triangulaire.
+Pour évaluer empiriquement les performances de l'algorithme, nous avons généré des graphes complets aléatoires respectant l'inégalité triangulaire. Chaque graphe est construit en plaçant $n$ points aléatoirement dans un espace euclidien à deux dimensions, avec des coordonnées tirées uniformément dans $[-5.0, 5.0]$. Les distances entre les sommets correspondent aux distances euclidiennes, garantissant ainsi l'inégalité triangulaire.
 
 Pour chaque taille de graphe, nous avons effectué 15 mesures indépendantes afin d'obtenir des résultats statistiquement significatifs pour des comparaisons. Notre analyse reporte les statistiques suivantes : la valeur minimale et maximale, le premier et troisième quartile et la moyenne inter-quartile. 
 
@@ -101,7 +101,7 @@ La @fig-1 présente l'évolution du rapport d'approximation en fonction du nombr
 === Analyse de complexité
 La complexité théorique de l'algorithme de #smallcaps[Christofides] est dominée par le calcul du couplage parfait de poids minimal, qui peut être résolu en $O(n^3)$ où $n$ est le nombre de sommets. Pour vérifier cette complexité empiriquement, nous avons mesuré le temps d'exécution de l'algorithme sur des graphes de tailles croissantes.
 
-La @fig-2 présente les résultats de cette analyse, avec le temps d'exécution en fonction du nombre de sommets. Nous avons appliqué une régression linéaire sur la racine cubique du temps d'exécution, obtenant un coefficient de corrélation linéaire $R^2$ proche de 1, ce qui confrime la complexité théorique en $O(n^3)$. Cette analyse empirique valide l'analyse théorique et donne également une estimation pratique des constantes impliquées, permettant de prédire le temps d'execution pour de plus grandes instances.
+La @fig-2 présente les résultats de cette analyse, avec le temps d'exécution en fonction du nombre de sommets. Nous avons appliqué une régression linéaire sur la racine cubique du temps d'exécution, obtenant un coefficient de corrélation linéaire $R^2$ proche de 1, ce qui confirme la complexité théorique en $O(n^3)$. Cette analyse empirique valide l'analyse théorique et donne également une estimation pratique des constantes impliquées, permettant de prédire le temps d'execution pour de plus grandes instances.
 
 ==  Cr
 
@@ -141,7 +141,7 @@ $
 |V_1| > ... > |V_m| > ... |V_M|
 $
 
-Ensuite, nous pouvons démontrer que les ensembles d'arêtes bloquées découvertes à différentes itérations sont disjoints (_Lemme 4.2_). En effet, pour qu'une arête bloquée soit découverte à l'itération $j$, ses deux extremités doivent être dans $V_j$. Si l'une des extrémités a été visitée lors d'une itération précédente $i$, alors l'arête ne peut pas être découverte à l'itération $j$. On a donc :
+Ensuite, nous pouvons démontrer que les ensembles d'arêtes bloquées découvertes à différentes itérations sont disjoints (_Lemme 4.2_). En effet, pour qu'une arête bloquée soit découverte à l'itération $j$, ses deux extrémités doivent être dans $V_j$. Si l'une des extrémités a été visitée lors d'une itération précédente $i$, alors l'arête ne peut pas être découverte à l'itération $j$. On a donc :
 
 $
 E_i inter E_j = emptyset, quad forall 1 <= i < j <= M
@@ -182,7 +182,7 @@ $
 M <= floor((1 + sqrt(1 + 8k))/2) = O(sqrt(k))
 $
 
-Finalement, pour calculer le coût total du tour, on établit que le coût de chaque itération est au plus $3 times OPT$ (_Lemme 4.4_). En ajoutant le cout du retour final au point de départ (au plus $OPT$), le coût total est :
+Finalement, pour calculer le coût total du tour, on établit que le coût de chaque itération est au plus $3 times OPT$ (_Lemme 4.4_). En ajoutant le coût du retour final au point de départ (au plus $OPT$), le coût total est :
 
 $
 c(T_"CR") <= (3 M + 1) times OPT = O(sqrt(k)) times OPT
@@ -197,7 +197,7 @@ Notre implémentation de l'algorithme CR est disponible dans le fichier `cctp/cr
 - le tour généré visite tous les sommets du graphe ;
 - le tour généré passe au plus une fois par chaque sommet.
 
-Pour assurer la robustesse de notre implémentation face à différentes configurations, nous avons également effectué 1000 tests _fuzzy_ sur des graphes générés aléatoirement avec un nombre de sommet variant entre 4 et 256.
+Pour assurer la robustesse de notre implémentation face à différentes configurations, nous avons également effectué 1000 tests _fuzzy_ sur des graphes générés aléatoirement avec un nombre de sommets variant entre 4 et 256.
 
 === Cadre expérimental
 Nous réutilisons ici les mêmes méthodes déjà utilisées dans la première partie, cependant pour le tirage aléatoire des nœuds bloqués, nous effectuons un tirage sans remise de $k$ arêtes parmi les arêtes du graphes.
@@ -268,7 +268,7 @@ Soit $G$ un graphe complet métrique et $T$ le tour initial calculé par l'algor
 
 $ c(T) <= 3/2 dot OPT $
 
-Lors de la phase de raccourci, l'algorithme suit $T$ jusqu'à rencontrer des arêtes bloquées, puis retourne au point de départ. Soit $T_S$ le tour obtenue à la suite de la phase de raccourci. Dans le pire cas l'algorithme parcourt le tour puis revient sur ses pas donc :
+Lors de la phase de raccourci, l'algorithme suit $T$ jusqu'à rencontrer des arêtes bloquées, puis retourne au point de départ. Soit $T_S$ le tour obtenu à la suite de la phase de raccourci. Dans le pire cas l'algorithme parcourt le tour puis revient sur ses pas donc :
 
 $ c(T_S) <= 3 dot OPT $
 
@@ -278,7 +278,7 @@ Pour compléter le tour, l'algorithme utilise l'heuristique du plus proche voisi
 
 Il est établi que sur un graphe arbitraire de $n$ sommets, l'algorithme du plus proche voisin a un rapport d'aproximation de $O(log n)$. Appliqué au graphe d'exploration de taille au plus $k+1$, cela donne un rapport $O(log(k+1)) = O(log k)$.
 
-Le cout optimal pour visiter tous les sommets de $G'$ dans le graphe original ne peut pas être inférieur à la solution optimale $OPT$. Soit $T_"NN"$ le tour obtenu après la phase d'exploration, nous avons :
+Le coût optimal pour visiter tous les sommets de $G'$ dans le graphe original ne peut pas être inférieur à la solution optimale $OPT$. Soit $T_"NN"$ le tour obtenu après la phase d'exploration, nous avons :
 
 $ c(T_"NN") = O(log k) dot OPT $
 
@@ -298,7 +298,7 @@ Notre implémentation de l'algorithme CNN est disponible dans le fichier `cctp/c
 - le tour généré visite tous les sommets du graphe ;
 - le tour généré passe au plus une fois par chaque sommet.
 
-Pour assurer la robustesse de notre implémentation face à différentes configurations, nous avons également effectué 1000 tests _fuzzy_ sur des graphes générés aléatoirement avec un nombre de sommet variant entre 4 et 256.
+Pour assurer la robustesse de notre implémentation face à différentes configurations, nous avons également effectué 1000 tests _fuzzy_ sur des graphes générés aléatoirement avec un nombre de sommets variant entre 4 et 256.
 
 === Cadre expérimental
 Nous réutilisons ici les mêmes méthodes déjà utilisées durant les autres parties.
@@ -433,7 +433,7 @@ Les graphes fortement clusterisé modélisent des réseaux présentant une struc
   ]
 ) <fig-clustered-n>
 
-Pour construire ces graphes, nous générons un ensemble de clusters, chacun contenant un nombre de sommet pour arriver à un total de $n$ sommets. Les centres des clusters sont positionnés aléatoirement dans l'espace, mais à des distances significatives les uns des autres (facteur multiplicatif de $20$). Les sommets des chaque cluster sont ensuite positionnés dans un voisinage proche de leur centre de cluster (distance maximale de $1$). Cette construction génère naturellement des communcautés distinctes avec des distances intra-cluster faibles et des distances inter-clusters élevées.
+Pour construire ces graphes, nous générons un ensemble de clusters, chacun contenant un nombre de sommets pour arriver à un total de $n$ sommets. Les centres des clusters sont positionnés aléatoirement dans l'espace, mais à des distances significatives les uns des autres (facteur multiplicatif de $20$). Les sommets des chaque cluster sont ensuite positionnés dans un voisinage proche de leur centre de cluster (distance maximale de $1$). Cette construction génère naturellement des communcautés distinctes avec des distances intra-cluster faibles et des distances inter-clusters élevées.
 
 La @fig-clustered-n présente le profil d'évolution suivant : pour les petites valeurs de $n$, les rapports d'approximation sont élevés (jusqu'à $1.8$ pour CNN et $1.7$ pour CR), puis diminuent rapidement avant de se stabiliser autour de $1.3$, soit une valeur plus élevée que pour d'autres classes de graphes. Cette stabilisation à un niveau supérieur s'explique par la structure clusterisée : lorsqu'une arête inter-clusters est bloquée, les détours nécessaires sont substantiellement plus coûteux.
 
@@ -473,8 +473,6 @@ Le @fig-power-law-k révèle une dégradation progressive mais limitée des perf
 Notre analyse empirique sur ces cinq classes de graphes permet de dégager plusieurs remarques sur le choix d'un algorithme en fonction du contexte de l'application.
 
 L'algorithme CR présente généralement des performances légèrement meilleures que CNN pour les faibles valeurs de $k$, particulièrement sur les graphes à poids constant et les graphes euclidiens. Sa simplicité conceptuelle et sa robustesse en font un excellent choix pour les applications où le nombre d'obstacles est prévisible et limité.
-
-L'algorithme CNN, bien qu'ayant généralement une performance légèrement inférieure est plus stable face à l'augmentation du nombre d'arêtes bloquées, grâce a sa garantie en $O(log k)$.
 
 On note cependant que nous n'avons pas pu observer sur les classes de graphes et les tailles d'instances un cas où CNN est meilleur que CR de façon significative. Ce résultat peut s'expliquer de différentes façons. D'une part, le type de graphe que nous étudions ne permet pas d'exhiber une telle différence. D'autre part, les tailles d'instances que nous avons fait ne permettent pas de voir une grande différence. Finalement, on note que la performance de CR et CNN est très proche, ce qui suggère que les deux algorithmes trouvent en pratique des solutions très proches de l'optimal à atteindre.
 
