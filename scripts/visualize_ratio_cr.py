@@ -87,7 +87,7 @@ def main():
 
     plt.grid(True, alpha=0.3)
     plt.xlabel("Nombre de sommet bloqué (k)")
-    plt.ylabel("Carré du temps d'exécution")
+    plt.ylabel("Carré du ratio")
     plt.legend(loc="upper left")
     plt.annotate(
         rf"$R^2$ = {r_squared:.4f}", xy=(0.68, 0.05), xycoords="axes fraction"
