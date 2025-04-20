@@ -2,7 +2,6 @@
 #import "@preview/cetz:0.3.1": canvas, draw
 #import "@preview/cetz-plot:0.1.0": plot
 
-#show "Christofides": _ => smallcaps[Christofides]
 #show "CR": _ => smallcaps[Cr]
 #show "CNN": _ => smallcaps[Cnn]
 
@@ -31,10 +30,10 @@ Dans ce document, nous présentons deux algorithmes qui ont été proposés pour
 
 == Christofides
 
-L'algorithme de Christofides @christofides, proposé en 1976, est une méthode d'approximation pour le problème du voyageur de commerce dans les graphes métriques, c'est-à-dire où les distances satisfont l'inégalité triangulaire. Cet algorithme garantit une solution dont le coût ne dépasse par 1.5 fois celui de la solution optimale, ce qui en fait l'un des algorithmes d'approximation les plus performants pour le TSP métrique.
+L'algorithme de #smallcaps[Christofides] @christofides, proposé en 1976, est une méthode d'approximation pour le problème du voyageur de commerce dans les graphes métriques, c'est-à-dire où les distances satisfont l'inégalité triangulaire. Cet algorithme garantit une solution dont le coût ne dépasse par 1.5 fois celui de la solution optimale, ce qui en fait l'un des algorithmes d'approximation les plus performants pour le TSP métrique.
 
 === Description de l'algorithme
-L'algorithme de Christofides se déroule en cinq étapes principales :
+L'algorithme de #smallcaps[Christofides] se déroule en cinq étapes principales :
 
 1. Calcul d'un arbre couvrant de poids minimal $T$ du graphe $G$.
 2. Identification des sommets de degré impair dans $T$.
@@ -48,12 +47,12 @@ Cette approche exploite le fait que tout graphe possédant uniquement des sommet
 Cette section présente la preuve de l'article de N. Chrisofides (1976).
 
 ==== Thérorème
-L'algorithme de Christofides garantit un rapport d'aprpoximation de 1.5 pour le problème du voyageur de commerce dans les graphes métriques.
+L'algorithme de #smallcaps[Christofides] garantit un rapport d'aprpoximation de 1.5 pour le problème du voyageur de commerce dans les graphes métriques.
 
 ==== Preuve
-Soit $G = (V, E)$ un graphe complet métrique et $OPT$ le coût de la solution optimale au TSP sur $G$. Nous voulons montrer que le coût du cycle hamiltonien produit par l'algorithme de Christofides est au plus $3/2 dot OPT$.
+Soit $G = (V, E)$ un graphe complet métrique et $OPT$ le coût de la solution optimale au TSP sur $G$. Nous voulons montrer que le coût du cycle hamiltonien produit par l'algorithme de #smallcaps[Christofides] est au plus $3/2 dot OPT$.
 
-L'algorithme de Christofides fonctionne par construction intérmédiaires, nous analyserons leurs coûts.
+L'algorithme de #smallcaps[Christofides] fonctionne par construction intérmédiaires, nous analyserons leurs coûts.
 
 Montrons que $c(T) <= OPT$. Soit $C^*$ un cycle hamiltonien optimal. En supprimant une arête quelconque de $C^*$, nous obtenons un arbre couvrant $T'$. Puisque $T$ est un arbre couvrant de poids minimal, nous avons : $c(T) <= c(T') <= OPT$.
 
@@ -67,7 +66,7 @@ Le cycle hamiltonien est obtenu en _raccourcissant_ le circuit eulérien, c'est-
 #h(1fr) $qed$
 
 === Implémentation et validation
-Notre implémentation de l'algorithme de Christofides utilise _Python_ et la bibliothèque _NetworkX_ pour représenter les graphes. Cette implémentation est disponible dans le fichier `cctp/christofides.py`. Pour valider la correction de l'implémentation, nous avons développé une suite de tests unitaires vérifiant que :
+Notre implémentation de l'algorithme de #smallcaps[Christofides] utilise _Python_ et la bibliothèque _NetworkX_ pour représenter les graphes. Cette implémentation est disponible dans le fichier `cctp/christofides.py`. Pour valider la correction de l'implémentation, nous avons développé une suite de tests unitaires vérifiant que :
 - le tour commence et se termine au même sommet ;
 - le tour généré visite tous les sommets du graphe ;
 - le tour généré passe au plus une fois par chaque sommet.
@@ -83,24 +82,24 @@ Pour chaque taille de graphe, nous avons effectué 15 mesures indépendantes afi
 #figure(
   image("figures/christofides_ratio_plot.svg"),
   caption: [
-  Évaluation du rapport d'approximation de l'algorithme de Christofides sur des instances du TSP générées aléatoirement en fonction du nombre de sommet (15 instances par taille). La courbe représente la moyenne interquartile et la zone teintée représente l'intervalle entre le minimum et le maximum.
+  Évaluation du rapport d'approximation de l'algorithme de #smallcaps[Christofides] sur des instances du TSP générées aléatoirement en fonction du nombre de sommet (15 instances par taille). La courbe représente la moyenne interquartile et la zone teintée représente l'intervalle entre le minimum et le maximum.
   ]
 ) <fig-1>
 
 === Analyse du rapport d'approximation
-Pour évaluer le rapport d'approximation empirique, nous avons comparé le coût des solutions générées par l'algorithme de Christofides au coût optimal obtenu par une recherche exhaustive, nous limitons la taille de ces instances à 12 nœuds pour se ramener à des instances calculables en un temps raisonnable.
+Pour évaluer le rapport d'approximation empirique, nous avons comparé le coût des solutions générées par l'algorithme de #smallcaps[Christofides] au coût optimal obtenu par une recherche exhaustive, nous limitons la taille de ces instances à 12 nœuds pour se ramener à des instances calculables en un temps raisonnable.
 
-La @fig-1 présente l'évolution du rapport d'approximation en fonction du nombre de sommets. Les résultats montrent que, bien que le rapport théorique soit de 1.5, le rapport observé en pratique est généralement meilleur, se situant autout de 1.1 pour les graphes euclidiens aléatoires. Ce résultat est cohérent avec la borne pessimiste de 1.5 donnée par l'algorithme de Christofides.
+La @fig-1 présente l'évolution du rapport d'approximation en fonction du nombre de sommets. Les résultats montrent que, bien que le rapport théorique soit de 1.5, le rapport observé en pratique est généralement meilleur, se situant autout de 1.1 pour les graphes euclidiens aléatoires. Ce résultat est cohérent avec la borne pessimiste de 1.5 donnée par l'algorithme de #smallcaps[Christofides].
 
 #figure(
   image("figures/christofides_time_plot.svg"),
   caption: [
-  Évolution du temps d'exécution de l'algorithme de Christofides sur des instances du TSP générées aléatoirement en fonction du nombre de sommet (15 mesures par taille). La courbe représente la moyenne interquartile et la zone teintée l'intervalle interquartile. La courbe noire représente le résultat de la regréssion linéaire sur les racines cubiques des IQM, $R^2$ représente le cohéfficient de linéarité, avec des valeur proches de $1$ indiquant une forte corrélation linéaire.
+  Évolution du temps d'exécution de l'algorithme de #smallcaps[Christofides] sur des instances du TSP générées aléatoirement en fonction du nombre de sommet (15 mesures par taille). La courbe représente la moyenne interquartile et la zone teintée l'intervalle interquartile. La courbe noire représente le résultat de la regréssion linéaire sur les racines cubiques des IQM, $R^2$ représente le cohéfficient de linéarité, avec des valeur proches de $1$ indiquant une forte corrélation linéaire.
   ]
 ) <fig-2>
 
 === Analyse de complexité
-La complexité théorique de l'algorithme de Christofides est dominée par le calcul du couplage parfait de poids minimal, qui peut être résolu en $O(n^3)$ où $n$ est le nombre de sommets. Pour vérifier cette complexité empiriquement, nous avons mesuré le temps d'exécution de l'algorithme sur des graphes de tailles croissantes.
+La complexité théorique de l'algorithme de #smallcaps[Christofides] est dominée par le calcul du couplage parfait de poids minimal, qui peut être résolu en $O(n^3)$ où $n$ est le nombre de sommets. Pour vérifier cette complexité empiriquement, nous avons mesuré le temps d'exécution de l'algorithme sur des graphes de tailles croissantes.
 
 La @fig-2 présente les résultats de cette analyse, avec le temps d'exécution en fonction du nombre de sommets. Nous avons appliqué une régression linéaire sur la racine cubique du temps d'exécution, obtenant un coefficient de corrélation linéaire $R^2$ proche de 1, ce qui confrime la complexité théorique en $O(n^3)$. Cette analyse empirique valide l'analyse théorique et donne également une estimation pratique des constantes impliquées, permettant de prédire le temps d'execution pour de plus grandes instances.
 
@@ -109,19 +108,19 @@ La @fig-2 présente les résultats de cette analyse, avec le temps d'exécution 
 L'algorithme CR @liao_covering (#smallcaps[Cyclic Routing]) de C.-S. Liao et Y. Huang permet de résoudre le problème du voyageur candien avec un rapport d'approximation de $O(sqrt(k))$. 
 
 === Description de l'algorithme
-L'algorithme CR repose sur le raisonnement suivant : l'itinéraire complet peut être décomposé en plusieurs tours ; à chaque tour, le voyageur tente de visiter le plus grand nombre possible de sommets en suivant l'ordre de visite de la tournée dérivée de l'algorithme de Christofides.
+L'algorithme CR repose sur le raisonnement suivant : l'itinéraire complet peut être décomposé en plusieurs tours ; à chaque tour, le voyageur tente de visiter le plus grand nombre possible de sommets en suivant l'ordre de visite de la tournée dérivée de l'algorithme de #smallcaps[Christofides].
 
 L'algorithme se déroule en trois phases principales :
 
-1. Calcul d'un tour initial $T$ avec Christofides.
+1. Calcul d'un tour initial $T$ avec #smallcaps[Christofides].
 2. Appliquer des opérations de raccourci pour éviter les arêtes bloquées.
 3. Parcourir le graphe en alternant les directions lorsque nécessaire.
 
-Plus précisément, soit $T : s = v_1 - v_2 - ... - v_n - s$ le tour calculé par l'algorithme de Christofides. L'algorithme CR explore les sommets non visités via des raccourcis sur le tour $T$ tout en découvrant des blocages. L'algorithme suit l'ordre de visite de $T$ et parcourt un raccourci vers $T$ à travers autant de sommets non visités que possible dans chaque tour.
+Plus précisément, soit $T : s = v_1 - v_2 - ... - v_n - s$ le tour calculé par l'algorithme de #smallcaps[Christofides]. L'algorithme CR explore les sommets non visités via des raccourcis sur le tour $T$ tout en découvrant des blocages. L'algorithme suit l'ordre de visite de $T$ et parcourt un raccourci vers $T$ à travers autant de sommets non visités que possible dans chaque tour.
 
 Lors de chaque itération $m$, nous définissons $V_m$ l'ensemble des sommets non visités au début du tour $m$. L'algorithme tente alors de visiter tous les sommets de $V_m$ en suivant l'ordre du tour $T$ ou l'ordre inverse, selon le résultat du tour précédent. Si lors d'un tour, le voyageur ne parvient pas à réduire le nombre de sommets non visités ou s'arrête avant d'atteindre le dernier sommet non visité, la direction est inversée pour le tour suivant.
 
-La procédure de raccourci #smallcaps[Shortcut] fonctionne de la manière suivante. Le voyageur tente de visiter chaque sommet non visité en suivant l'ordre du tour (ou l'ordre inverse, comme expliqué précédemment). Lorsque l'algorithme est au sommet $u$ et cherche à aller au sommet $v$, trois cas sont possibles. Soit $(u, v)$ n'est pas bloquée, ce qui peut être détecté, car on est à un sommet adjacent de cette arête, dans ce cas, on parcourt $(u, v)$ pour aller en $v$. Si $(u, v)$ est bloqué, alors, comme $v$ est le prochain sommet bloqué à visiter, alors tout sommet entre $u$ et $v$, notons $w$ dans l'ordre initial de Christofides a été déjà visité à une itération précédente, sans quoi $w$ serait le prochain sommet à visiter. On cherche alors $w$ tel que $(u, w)$ et $(w, v)$ ne sont pas bloqués, ce que l'on sait parce que l'on est déjà passé au sommet $w$ à une itération précédente et que ce sommet est adjacent à ces deux arêtes. Si un tel sommet $w$ n'existe pas, alors, on abandonne et on cherche à aller au prochain sommet $v'$, qui n'a pas encore été visité et est après $v$ dans l'ordre du tour.
+La procédure de raccourci #smallcaps[Shortcut] fonctionne de la manière suivante. Le voyageur tente de visiter chaque sommet non visité en suivant l'ordre du tour (ou l'ordre inverse, comme expliqué précédemment). Lorsque l'algorithme est au sommet $u$ et cherche à aller au sommet $v$, trois cas sont possibles. Soit $(u, v)$ n'est pas bloquée, ce qui peut être détecté, car on est à un sommet adjacent de cette arête, dans ce cas, on parcourt $(u, v)$ pour aller en $v$. Si $(u, v)$ est bloqué, alors, comme $v$ est le prochain sommet bloqué à visiter, alors tout sommet entre $u$ et $v$, notons $w$ dans l'ordre initial de #smallcaps[Christofides] a été déjà visité à une itération précédente, sans quoi $w$ serait le prochain sommet à visiter. On cherche alors $w$ tel que $(u, w)$ et $(w, v)$ ne sont pas bloqués, ce que l'on sait parce que l'on est déjà passé au sommet $w$ à une itération précédente et que ce sommet est adjacent à ces deux arêtes. Si un tel sommet $w$ n'existe pas, alors, on abandonne et on cherche à aller au prochain sommet $v'$, qui n'a pas encore été visité et est après $v$ dans l'ordre du tour.
 
 L'algorithme répète ce processus jusqu'à ce que tous les sommets soitent visités, puis retourne au point de départ.
 
@@ -220,7 +219,7 @@ La @fig-cr-ratio présente les résultats de cette analyse, et confirment que le
 Cette figure valide également notre implémentation, puisque nous observons exactement l'évoluation du rapport d'approximation prédite par l'analyse théorique.
 
 === Analyse de complexité
-La complexité temporelle de l'algorithme CR est dominée par celle de l'algorithme de Christofides, c'est pourquoi nous retirons la phase de calcul du tour de Christofides de la mesure de performance temporelle. On s'intéresse alors à la complexité du reste de l'exécution de l'algorithme.
+La complexité temporelle de l'algorithme CR est dominée par celle de l'algorithme de #smallcaps[Christofides], c'est pourquoi nous retirons la phase de calcul du tour de #smallcaps[Christofides] de la mesure de performance temporelle. On s'intéresse alors à la complexité du reste de l'exécution de l'algorithme.
 
 La procédure de raccourci #smallcaps[Shortcut] est exécutée à chaque itération et peut examiner jusqu'à $O(n)$ sommets non visités. Pour chaque sommet, dans le pire des cas, l'algorithme doit vérifier jusqu'à $O(n)$ sommets déjà visités pour trouver un chemin alternatif, ce qui donne une complexité de $O(n^2)$ par itération. Comme montré dans la preuve du rapport d'approximation, le nombre d'itération est borné par $O(sqrt(k))$, où $k$ est le nombre d'aretes bloquées.
 
@@ -251,7 +250,7 @@ L'algorithme CNN @hahn_covering (#smallcaps[Christofides Nearest Neighbor]) repr
 === Description de l'algorithme
 L'algorithme CNN se déroule en quatre phases principales.
 
-1. Calcul d'un tour initial $T$ avec Christofides.
+1. Calcul d'un tour initial $T$ avec #smallcaps[Christofides].
 2. Parcours du tour en utilisant la procédure #smallcaps[Shortcut] utilisé par CR. Suite à ce tour, si on ne termine pas au nœud initial, on revient sur ses pas jusqu'à ce qu'on y revienne. Lors de cette phase, à chaque passage de sommet, on note les arêtes qui sont bloquées.
 3. On construit un graphe de connaissance $H$, ce graphe contient tous les sommets du graphe et toutes les arêtes adjacentes à des arêtes visitées lors du tour initial et non bloquées. C'est avec ce graphe de connaissance que l'on peut construire un multigraphe d'exploration $G'$, qui contient tous les nœuds qui n'ont pas pu être exploré lors du tour initial, et le sommet initial. Ce graphe contient entre tous deux sommets $u$ et $v$ deux chemins : d'une part un chemin risqué, qui correspond à l'arête $(u, v)$ de $G$, mais dont on ne peut pas être sur de si il est accessible ou non, et d'autres part, un chemin alternatif, calculé dans $H$, mais plus long. On a donc deux options pour chaque passage, soit, si il est accessible, prendre le chemin court, sinon, prendre le chemin long, garanti d'être accessible car calculé dans le graphe de connaissance, mais qui fait faire un détour.
 4. La dernière phase utilise l'algorithme du plus proche voisin (_Nearest Neighbor_) pour compléter le tour en visitant tous les nœuds de $G'$. L'algorithme sélectionne itérativement le nœud le plus proche accessible par un chemin non bloqué. Une fois tous les nœuds visitiés, l'algorithme revient au point de départ pour compléter le tour.
@@ -263,7 +262,7 @@ Cette section présente la preuve de l'article de N. Hahn et M. Xefteris (2023).
 L'algorithme CNN a un rapport d'approximation de $O(log k)$ pour le problème $k$-CCTP, où $k$ est le nombre d'arêtes bloquées.
 
 ==== Preuve
-Soit $G$ un graphe complet métrique et $T$ le tour initial calculé par l'algorithme de Christofides. Puisque Christofides garantit une $3/2$-approximation du TSP, nous avons :
+Soit $G$ un graphe complet métrique et $T$ le tour initial calculé par l'algorithme de #smallcaps[Christofides]. Puisque #smallcaps[Christofides] garantit une $3/2$-approximation du TSP, nous avons :
 
 $ c(T) <= 3/2 dot OPT $
 
@@ -319,7 +318,7 @@ La @fig-cnn-ratio présente les résultats de cette analyse. Comme prévu par la
 Cette figure confirme aussi notre implémentation, on observe effectivement l'évolution attenue par l'analyse.
 
 === Analyse de complexité
-La complexité temporelle de l'algorithme CNN est dominée par celle de l'algorithme de Christofides, c'est pourquoi nous retirons la phase de calcul du tour de Christofides de la mesure de performance temporelle. On s'intéresse alors à la complexité du reste de l'exécution de l'algorithme.
+La complexité temporelle de l'algorithme CNN est dominée par celle de l'algorithme de #smallcaps[Christofides], c'est pourquoi nous retirons la phase de calcul du tour de #smallcaps[Christofides] de la mesure de performance temporelle. On s'intéresse alors à la complexité du reste de l'exécution de l'algorithme.
 
 #figure(
   image("figures/cnn_time_plot_n.svg"),
@@ -328,7 +327,7 @@ La complexité temporelle de l'algorithme CNN est dominée par celle de l'algori
   ]
 ) <fig-cnn-time-n>
 
-La phase de raccourci a une complexité de $O(n)$ due à l'algorithme de Christofides. La phase de calcul du graphe de connaissance et du graphe d'exploration implique le calcul de $O(k^2)$ plus courts chemins dans un graphe de taille $n$, pour une complexité de $O(k^2 dot n^2)$. La phase d'exploration a une complexité de $O(k^2)$ car elle applique l'algorithme du plus proche voisin sur un graphe de $k+1$ sommets.
+La phase de raccourci a une complexité de $O(n)$ due à l'algorithme de #smallcaps[Christofides]. La phase de calcul du graphe de connaissance et du graphe d'exploration implique le calcul de $O(k^2)$ plus courts chemins dans un graphe de taille $n$, pour une complexité de $O(k^2 dot n^2)$. La phase d'exploration a une complexité de $O(k^2)$ car elle applique l'algorithme du plus proche voisin sur un graphe de $k+1$ sommets.
 
 La complexité totale est donc $O(k^2 + n^2)$. Pour $k << n$, cette complexité est dominée par $O(n^2)$. Pour vérifier cette complexité empiriquement, nous avons mesuré le temps d'exécution de l'algorithme sur des graphes de tailles croissantes.
 
