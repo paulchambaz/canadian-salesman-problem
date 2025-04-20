@@ -54,12 +54,12 @@
     #rect(inset: .4cm, stroke: .4pt)[
       = #title
     ]
-    #v(1cm)
+    #v(0.6cm)
   ]
 
   if abstract != none {
     align(center, text(13pt, weight: 500, smallcaps[Abstract]))
-    pad(x: 2cm, bottom: 0.5cm, abstract)
+    pad(x: 1cm, bottom: 0.5cm, abstract)
   }
 
   show heading.where(

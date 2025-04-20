@@ -19,42 +19,57 @@ def main():
         }
     )
 
-    with open("results/cr_ratio_k_results.pk", "rb") as f:
+    with open("results/cr_ratio_results.pk", "rb") as f:
         results = pickle.load(f)
 
     sizes = np.array(results["sizes"])
 
     iqms = np.array([results["data"][n]["iqm"] for n in sizes])
+    mins = np.array([results["data"][n]["min"] for n in sizes])
+    maxs = np.array([results["data"][n]["max"] for n in sizes])
 
-    def func(x, a, b):
-        return a * np.sqrt(x) + b
+    squared_iqm = np.square(iqms)
+    squared_min = np.square(mins)
+    squared_max = np.square(maxs)
 
-    params_log, _ = curve_fit(func, sizes, iqms)
-    a_log, b_log = params_log
-    fit_log = func(sizes, a_log, b_log)
+    def linear_func(x, a, b):
+        return a * x + b
 
-    ss_tot = np.sum((iqms - np.mean(iqms)) ** 2)
-    ss_res_log = np.sum((iqms - fit_log) ** 2)
-    r_squared_log = 1 - (ss_res_log / ss_tot)
+    params, _ = curve_fit(linear_func, sizes, squared_iqm)
+    a, b = params
+    fit_line = linear_func(sizes, a, b)
+
+    ss_tot = np.sum((squared_iqm - np.mean(squared_iqm)) ** 2)
+    ss_res = np.sum((squared_iqm - fit_line) ** 2)
+    r_squared = 1 - (ss_res / ss_tot)
 
     plt.figure(figsize=(6, 6))
 
     plt.plot(
         sizes,
-        fit_log,
-        "--",
-        color="black",
-        linewidth=1.5,
-        label=rf"${a_log:.4f} \sqrt(n) + {b_log:.4f}$",
+        squared_iqm,
+        "o-",
+        color="#d66b6a",
+        linewidth=2,
+        label="Carré du ratios du graphe de borne serrée",
+    )
+
+    plt.fill_between(
+        sizes,
+        squared_min,
+        squared_max,
+        alpha=0.2,
+        color="#d66b6a",
+        label=r"Carré du min et max des ratios",
     )
 
     plt.plot(
         sizes,
-        iqms,
-        "o-",
-        color="#3498db",
-        linewidth=2,
-        label="Ratios du graphe de borne serrée",
+        fit_line,
+        color="black",
+        linestyle="--",
+        linewidth=1.5,
+        label=rf"Courbe linéaire : ${a:.4f}x + {b:.4f}$",
     )
 
     plt.axhline(
@@ -70,17 +85,17 @@ def main():
     plt.ylabel("Ratio")
     plt.legend()
 
+    plt.grid(True, alpha=0.3)
+    plt.xlabel("Nombre de sommet bloqué (k)")
+    plt.ylabel("Carré du temps d'exécution")
+    plt.legend(loc="upper left")
     plt.annotate(
-        rf"$R^2$ = {r_squared_log:.4f}",
-        xy=(0.7, 0.1),
-        xycoords="axes fraction",
+        rf"$R^2$ = {r_squared:.4f}", xy=(0.68, 0.05), xycoords="axes fraction"
     )
 
     plt.tight_layout()
 
     plt.savefig("paper/figures/cr_ratio_plot.svg", bbox_inches="tight")
-
-    plt.show()
 
 
 if __name__ == "__main__":

@@ -3,9 +3,9 @@ import random
 from pathlib import Path
 
 import numpy as np
+from cstp import christofides_p, utils
 from tqdm import tqdm
 
-from cstp import utils, christofides_p
 
 def main():
     seed = 21867
@@ -28,7 +28,9 @@ def main():
             christofides_tour, christofides_cost = (
                 christofides_p.travelling_salesman_christofides(graph)
             )
-            _, cnn_cost = christofides_p.canadian_traveller_cyclic_routing(graph, blocked_edges, christofides_tour)
+            _, cnn_cost = christofides_p.canadian_traveller_cyclic_routing(
+                graph, blocked_edges, christofides_tour
+            )
             ratios.append(cnn_cost / christofides_cost)
 
         stats = utils.compute_stats(ratios)

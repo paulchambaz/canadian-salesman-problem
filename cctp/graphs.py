@@ -7,29 +7,77 @@ import random
 import networkx as nx
 
 from .types import Edge
-from .utils import create_complete_graph_from_points, create_random_graph
+from .utils import create_complete_graph_from_points, create_random_graph, edge
+
 
 def cr_tight_bound_graph(p: int) -> tuple[nx.Graph, set[Edge]]:
-    tight_bound_graph = nx.Graph()
-    positions = [(0,0),(1,1),(1,0)]
-    positions *= p / 3
-    print(positions)
-    tight_bound_graph = create_complete_graph_from_points(positions)
-    for i in range(0,p,3):
-        tight_bound_graph.add_node(i, pos=(0,0))
-        if i > 0:
-            tight_bound_graph.add_node(i-1, i,weight=1)
+    """Create a graph that demonstrates the tight bound for CR algorithm.
 
-        tight_bound_graph.add_node(i+1, pos=(1,1))
-        tight_bound_graph.add_node(i+2, pos=(1,0))
-        tight_bound_graph.add_edge(i,i+1,weight=1)
-        tight_bound_graph.add_edge(i+1,i+2,weight = 1)
-    complete_graph = nx.complete_graph(p)
-    edge_list_complete = set(complete_graph.edges())
-    edge_list_tight_bound = set(tight_bound_graph.edges())
-    blocked_list = edge_list_complete-edge_list_tight_bound
-    return 
+    Constructs a graph with three pseudo-nodes and connecting vertices that
+    forces CR to take approximately sqrt(k) tours, demonstrating the
+    O(sqrt(k))-competitive ratio.
 
+    Args:
+        p: Parameter determining the size of the graph
+
+    Returns:
+        Tuple containing the graph and the set of blocked edges
+    """
+    points = []
+
+    total_nodes = int(3 * ((p * (p + 1)) / 2 + 1))
+    total_added_nodes = int(total_nodes - 3 * p)
+    added_nodes = int(total_added_nodes / 3)
+
+    dist = 1
+    index = 0
+    index_tiny = 0
+    for i in range(total_nodes):
+        if (
+            (i >= 0 and i < added_nodes)
+            or (i >= p + added_nodes and i < 2 * added_nodes + p)
+            or (i >= 2 * p + 2 * added_nodes and i < 3 * added_nodes + 2 * p)
+        ):
+            angle = 2 * math.pi * index / (total_added_nodes + 3)
+            points.append((-math.sin(angle) * dist, math.cos(angle) * dist))
+            index += 1
+            index_tiny = 0
+        else:
+            angle = (
+                2
+                * math.pi
+                * (index + index_tiny * 0.001)
+                / (total_added_nodes + 3)
+            )
+            points.append((-math.sin(angle) * dist, math.cos(angle) * dist))
+            index_tiny += 1
+            if index_tiny == p:
+                index += 1
+
+    blocked_edges = set()
+    for i in range(total_nodes):
+        for j in range(total_nodes):
+            if i < j:
+                blocked_edges.add((i, j))
+
+    golden_path = []
+    for j in range(3):
+        for i in range(added_nodes):
+            golden_path.append(j * (added_nodes + p) + i)
+
+    for i in range(p):
+        for j in range(3):
+            golden_path.append((3 - j) * added_nodes + (2 - j) * p + i)
+
+    golden_path.append(0)
+
+    remove_blocked_edges = set()
+    for i in range(len(golden_path) - 1):
+        remove_blocked_edges.add(edge(golden_path[i], golden_path[i + 1]))
+
+    blocked_edges -= remove_blocked_edges
+
+    return create_complete_graph_from_points(points), blocked_edges
 
 
 def cnn_tight_bound_graph(p: int) -> tuple[nx.Graph, set[Edge]]:

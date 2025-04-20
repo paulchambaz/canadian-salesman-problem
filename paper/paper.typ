@@ -2,21 +2,22 @@
 #import "@preview/cetz:0.3.1": canvas, draw
 #import "@preview/cetz-plot:0.1.0": plot
 
+#show "Christofides": _ => smallcaps[Christofides]
+#show "CR": _ => smallcaps[Cr]
+#show "CNN": _ => smallcaps[Cnn]
+
 #show: report.with(
   title: [ Problème du voyageur canadien couvrant ],
   course: [ Résolution de problème ],
   authors: ("Paul Chambaz", "Philipp Hanussek" ),
   university: [ Sorbonne Université ],
   reference: [ Master #smallcaps[Ai2d] M1 & #smallcaps[Iq] ],
+  bibliography-path: "bibliography.yml",
   nb-columns: 2,
   abstract: [
-    #lorem(20)
+    Dans ce rapport, nous analysons et comparons deux algorithmes pour le problème du _Voyageur Canadien Couvrant_ : l'algorithme CR avec un rapport d'approximation de $O(sqrt(k))$ et l'algorithme CNN avec un rapport d'approximation de $O(log k)$, où $k$ est le nombre d'arêtes bloquées. Nous validons empiriquement ces bornes théoriques à l'aide de constructions spécifiques et évaluons leur performance sur diverses classes de graphes pour déterminer quand chaque algorithme est préférable en pratique.
   ]
 )
-
-#show "Christofides": _ => smallcaps[Christofides]
-#show "CR": _ => smallcaps[Cr]
-#show "CNN": _ => smallcaps[Cnn]
 
 == Introduction
 
@@ -30,7 +31,7 @@ Dans ce document, nous présentons deux algorithmes qui ont été proposés pour
 
 == Christofides
 
-L'algorithme de Christofides, proposé en 1976, est une méthode d'approximation pour le problème du voyageur de commerce dans les graphes métriques, c'est-à-dire où les distances satisfont l'inégalité triangulaire. Cet algorithme garantit une solution dont le coût ne dépasse par 1.5 fois celui de la solution optimale, ce qui en fait l'un des algorithmes d'approximation les plus performants pour le TSP métrique.
+L'algorithme de Christofides @christofides, proposé en 1976, est une méthode d'approximation pour le problème du voyageur de commerce dans les graphes métriques, c'est-à-dire où les distances satisfont l'inégalité triangulaire. Cet algorithme garantit une solution dont le coût ne dépasse par 1.5 fois celui de la solution optimale, ce qui en fait l'un des algorithmes d'approximation les plus performants pour le TSP métrique.
 
 === Description de l'algorithme
 L'algorithme de Christofides se déroule en cinq étapes principales :
@@ -78,105 +79,179 @@ Pour évaluer empiriquement les performances de l'algorithmes, nous avons géné
 
 Pour chaque taille de graphe, nous avons effectué 15 mesures indépendantes afin d'obtenir des résultats statistiquement significatifs pour des comparaisons. Notre analyse reporte les statistiques suivantes : la valeur minimale et maximale, le premier et troisième quartile et la moyenne inter-quartile. 
 
-=== Analyse du rapport d'approximation
-Pour évaluer le rapport d'approximation empirique, nous avons comparé le coût des solutions générées par l'algorithme de Christofides au coût optimal obtenu par une recherche exhaustive, nous limitons la taille de ces instances à 12 nœuds pour se ramener à des instances calculables en un temps raisonnable.
 
 #figure(
   image("figures/christofides_ratio_plot.svg"),
   caption: [
-  Évaluation du rapport d'approximation de l'algorithme de Christofides sur des instances du TSP générées aléatoirement en fonction du nombre de sommet (15 instances par taille). La courbe bleue représente la moyenne interquartile et la zone bleutée représente l'intervalle entre le minimum et le maximum.
+  Évaluation du rapport d'approximation de l'algorithme de Christofides sur des instances du TSP générées aléatoirement en fonction du nombre de sommet (15 instances par taille). La courbe représente la moyenne interquartile et la zone teintée représente l'intervalle entre le minimum et le maximum.
   ]
 ) <fig-1>
 
-La @fig-1 présente l'évolution du rapport d'approximation en fonction du nombre de sommets. Les résultats montrent que, bien que le rapport théorique soit de 1.5, le rapport observé en pratique est généralement meilleur, se situant autout de 1.1 pour les graphes euclidiens aléatoires. Ce résultat est cohérent avec la borne pessimiste de 1.5 donnée par l'algorithme de Christofides.
+=== Analyse du rapport d'approximation
+Pour évaluer le rapport d'approximation empirique, nous avons comparé le coût des solutions générées par l'algorithme de Christofides au coût optimal obtenu par une recherche exhaustive, nous limitons la taille de ces instances à 12 nœuds pour se ramener à des instances calculables en un temps raisonnable.
 
-=== Analyse de complexité
-La complexité théorique de l'algorithme de Christofides est dominée par le calcul du couplage parfait de poids minimal, qui peut être résolu en $O(n^3)$ où $n$ est le nombre de sommets. Pour vérifier cette complexité empiriquement, nous avons mesuré le temps d'exécution de l'algorithme sur des graphes de tailles croissantes.
+La @fig-1 présente l'évolution du rapport d'approximation en fonction du nombre de sommets. Les résultats montrent que, bien que le rapport théorique soit de 1.5, le rapport observé en pratique est généralement meilleur, se situant autout de 1.1 pour les graphes euclidiens aléatoires. Ce résultat est cohérent avec la borne pessimiste de 1.5 donnée par l'algorithme de Christofides.
 
 #figure(
   image("figures/christofides_time_plot.svg"),
   caption: [
-  Évolution du temps d'exécution de l'algorithme de Christofides sur des instances du TSP générées aléatoirement en fonction du nombre de sommet (15 mesures par taille). La courbe bleue représente la moyenne interquartile et la zone bleutée l'intervalle interquartile. La courbe noire représente le résultat de la regréssion linéaire sur les racines cubiques des IQM, $R^2$ représente le cohéfficient de linéarité, avec des valeur proches de $1$ indiquant une forte corrélation linéaire.
+  Évolution du temps d'exécution de l'algorithme de Christofides sur des instances du TSP générées aléatoirement en fonction du nombre de sommet (15 mesures par taille). La courbe représente la moyenne interquartile et la zone teintée l'intervalle interquartile. La courbe noire représente le résultat de la regréssion linéaire sur les racines cubiques des IQM, $R^2$ représente le cohéfficient de linéarité, avec des valeur proches de $1$ indiquant une forte corrélation linéaire.
   ]
 ) <fig-2>
+
+=== Analyse de complexité
+La complexité théorique de l'algorithme de Christofides est dominée par le calcul du couplage parfait de poids minimal, qui peut être résolu en $O(n^3)$ où $n$ est le nombre de sommets. Pour vérifier cette complexité empiriquement, nous avons mesuré le temps d'exécution de l'algorithme sur des graphes de tailles croissantes.
 
 La @fig-2 présente les résultats de cette analyse, avec le temps d'exécution en fonction du nombre de sommets. Nous avons appliqué une régression linéaire sur la racine cubique du temps d'exécution, obtenant un coefficient de corrélation linéaire $R^2$ proche de 1, ce qui confrime la complexité théorique en $O(n^3)$. Cette analyse empirique valide l'analyse théorique et donne également une estimation pratique des constantes impliquées, permettant de prédire le temps d'execution pour de plus grandes instances.
 
 ==  Cr
 
-L'algorithme CR (Cyclic Routing) de C.-S. Liao et Y. Huang permet de résoudre le problème du voyageur candien avec un rapport d'approximation de $O(sqrt(k))$. 
+L'algorithme CR @liao_covering (#smallcaps[Cyclic Routing]) de C.-S. Liao et Y. Huang permet de résoudre le problème du voyageur candien avec un rapport d'approximation de $O(sqrt(k))$. 
 
 === Description de l'algorithme
-+ Calcul d'un tour initial par l'algorithme de Christofides $P$
-+ Tant qu'il restent des noeuds non-visités : parcourir le graphe $P$ en appliquant la procédure `shortcut` dans le sens de visite de $P$, changer le sens de visite si nécessaire
-Après l'application de `shortcut`, le sens de visite change si :
-- le nombre de noeuds non-visités n'a pas deminiué
-- l'itération précédente de `shortcut` s'est arrêtée avant d'atteindre le dernier noeud non-visité 
+L'algorithme CR repose sur le raisonnement suivant : l'itinéraire complet peut être décomposé en plusieurs tours ; à chaque tour, le voyageur tente de visiter le plus grand nombre possible de sommets en suivant l'ordre de visite de la tournée dérivée de l'algorithme de Christofides.
 
-L'algorithme `shortcut` se déroule en deux phases principales :
-+ assumer que toutes les noeuds non-visités sont accessibles 
-+ tant qu'il restent des noeuds non visités et accessibles : essayer d'atteindre le noeud non-visité le plus proche, si nécessaire par des noeud intermédiaires (toujours dans le sens de visite)
+L'algorithme se déroule en trois phases principales :
+
+1. Calcul d'un tour initial $T$ avec Christofides.
+2. Appliquer des opérations de raccourci pour éviter les arêtes bloquées.
+3. Parcourir le graphe en alternant les directions lorsque nécessaire.
+
+Plus précisément, soit $T : s = v_1 - v_2 - ... - v_n - s$ le tour calculé par l'algorithme de Christofides. L'algorithme CR explore les sommets non visités via des raccourcis sur le tour $T$ tout en découvrant des blocages. L'algorithme suit l'ordre de visite de $T$ et parcourt un raccourci vers $T$ à travers autant de sommets non visités que possible dans chaque tour.
+
+Lors de chaque itération $m$, nous définissons $V_m$ l'ensemble des sommets non visités au début du tour $m$. L'algorithme tente alors de visiter tous les sommets de $V_m$ en suivant l'ordre du tour $T$ ou l'ordre inverse, selon le résultat du tour précédent. Si lors d'un tour, le voyageur ne parvient pas à réduire le nombre de sommets non visités ou s'arrête avant d'atteindre le dernier sommet non visité, la direction est inversée pour le tour suivant.
+
+La procédure de raccourci #smallcaps[Shortcut] fonctionne de la manière suivante. Le voyageur tente de visiter chaque sommet non visité en suivant l'ordre du tour (ou l'ordre inverse, comme expliqué précédemment). Lorsque l'algorithme est au sommet $u$ et cherche à aller au sommet $v$, trois cas sont possibles. Soit $(u, v)$ n'est pas bloquée, ce qui peut être détecté, car on est à un sommet adjacent de cette arête, dans ce cas, on parcourt $(u, v)$ pour aller en $v$. Si $(u, v)$ est bloqué, alors, comme $v$ est le prochain sommet bloqué à visiter, alors tout sommet entre $u$ et $v$, notons $w$ dans l'ordre initial de Christofides a été déjà visité à une itération précédente, sans quoi $w$ serait le prochain sommet à visiter. On cherche alors $w$ tel que $(u, w)$ et $(w, v)$ ne sont pas bloqués, ce que l'on sait parce que l'on est déjà passé au sommet $w$ à une itération précédente et que ce sommet est adjacent à ces deux arêtes. Si un tel sommet $w$ n'existe pas, alors, on abandonne et on cherche à aller au prochain sommet $v'$, qui n'a pas encore été visité et est après $v$ dans l'ordre du tour.
+
+L'algorithme répète ce processus jusqu'à ce que tous les sommets soitent visités, puis retourne au point de départ.
+
+=== Preuve du rapport d'approximation
+Cette section présente la preuve de l'article de C.-S. Liao et Y. Huang (2014).
 
 ==== Théorème
-Le ratio d'approximation de CR est de $O(sqrt(k))$.
+L'algorithme CR a un rapport d'approximation de $O(sqrt(k)$ pour le problème $k$-CCTP, où $k$ est le nombre d'arêtes bloquées.
 
 ==== Preuve
-Soit $E_i$ une liste des blockages découvertes dans l'itération $i$ de l'algorithme CR, et soit $m^"cr"$ le nombre total d'itérations. Comme le voyageur candien ne redécourvre jamais un blockage qu'il connaît déjà le nombre total de blockages $k$ est borné par :
+Pour démontrer ce rapport d'approximation, nous allons d'abord établir plusieurs propriétés de l'algorithme CR, puis les combiner pour obtenir le résultat final.
 
-$ |E_1|+|E_2|+...+|E_(m^"cr")|<=k $
+On note $M$ le nombre total d'itérations effectuées par l'algorithme CR, $V_m$ l'ensemble des sommets non visités au début de l'itération $m$, avec ($1 <= m <= M$). Finalement, $E_m$ est l'ensemble des arêtes bloquées découvertes lors de l'itération $m$.
 
-Soit $V_m$ une liste de noeuds non-visités lors de l'itération $m$. Pour chaque blockage découvert l'lors de l'itération $m$, au moins un noeud est supprimé de la liste des noeuds non-visités $V_(m+1)$, d'où :  
+Tout d'abord, nous pouvons montrer que l'algorithme CR visite au moins un sommet à chaque itération (_Lemme 4.1_). Cela implique que :
 
-$ |V_2| + |V_3|+...+|V_(m^("cr"+1))|<= \
-  |E_1|+|E_2|+...+|E_(m^("cr"))| $
+$
+|V_1| > ... > |V_m| > ... |V_M|
+$
 
-avec dans le pire cas $|V_m \\ V_(m+1)| = 1$, $|V_2|=m^"cr"-1$ et $|V_(m^("cr"+1))| = 0$. En utilisant la formule de la Somme de Gauss, on obtient :
+Ensuite, nous pouvons démontrer que les ensembles d'arêtes bloquées découvertes à différentes itérations sont disjoints (_Lemme 4.2_). En effet, pour qu'une arête bloquée soit découverte à l'itération $j$, ses deux extremités doivent être dans $V_j$. Si l'une des extrémités a été visitée lors d'une itération précédente $i$, alors l'arete ne peut pas être découverte à l'itération $j$. On a donc :
 
-$ ((1 + (m_"cr" − 1))(m_"cr" − 1)) / 2 <= k \
-  => m_"cr" <= floor((1+sqrt(1+8k))/2) \
- $
+$
+E_i inter E_j = emptyset, quad forall 1 <= i < j <= M
+$
 
- Soit $d(P^"cr")$ le tour final retourné par l'algorithme CR. Le coût total de ce tour est borné par :
+Nous pouvons également établir que le nombre d'arêtes bloquées découvertes à l'itiration $m$ est au moins égal au nombre de sommets qui restent non visités après cette itération (_Lemme 4.3_). En effet, pour chaque sommet $v$ qui reste non visité dans $V_(m+1)$, il doit exister une arête bloquée découverte durant l'itération $m$ qui empêche d'atteindre $v$. On a donc :
 
- $ d(P^"cr") <= (3m^"cr"+1)"OPT, avec" m^"cr" = O(sqrt(k)) $
+$
+|E_m| >= |V_(m+1)| quad forall i <= m <= M
+$
 
- Par conséquent, le ratio d'approximation de l'algorithme CR est de $O(sqrt(k))$.#h(1fr) $qed$
+Ces propriétés nous permettent de borner le nombre total d'itérations $M$. Puisque les ensembles $E_m$ sont disjoints et que leur union contient au plus $k$ arrêtes bloquées, nous avons :
+
+$
+|E_1| + |E_2| + ... + |E_M| <= k
+$
+
+De plus, en combinant avec le résultat du Lemme 4.3, nous obtenons :
+
+$
+|V_2| + |V_3| + ... + |V_(M+1)| \
+<= |E_1| + |E_2| + ... + |E_M| <= k
+$
+
+Dans le pire cas, selon le Lemme 4.1, l'algorithme ne visite qu'un seul sommet par itération, ce qui implique $|V_m \\ V_(m+1)| = 1$ pour tout $m$. Cela signifie que $|V_(M+1)| = 0$, $|V_M| = 1$, et ainsi de suite jusqu'à $|V_2| = M-2$.
+
+En utilisant cette relation, on obtient :
+
+$
+((1 + (M-1))(M-1)) / 2 <= k
+$
+
+En résolvant cette inéquation avec $M$, on obtient :
+
+$
+M <= floor((1 + sqrt(1 + 8k))/2) = O(sqrt(k))
+$
+
+Finalement, pour calculer le coût total du tour, on établit que le coût de chaque itération est au plus $3 times OPT$ (_Lemme 4.4_). En ajoutant le cout du retour final au point de départ (au plus $OPT$), le coût total est :
+
+$
+c(T_"CR") <= (3 M + 1) times OPT = O(sqrt(k)) times OPT
+$
+
+Ce qui établit le rapport d'approximation de $O(sqrt(k))$ pour l'algorithme CR.
+#h(1fr) $qed$
 
 === Implémentation et validation
-L'implémentation de l'algorithme CR est disponible dans le fichier `cstp/cr.py` et consiste de trois fonctions principales : 
-- `canadian_traveller_cyclic_routing` : En utilisant l’algorithme de Christofides, cette fonction calcule un tour $T$ et renomme ensuite tous les sommets et blocages du graphe initial pour que leur ordre reflète celui du parcours, de façon croissante
-- `cyclic_routing` et `shortcut` implémentent la fonctionnalité décrite ci-dessus
-Pour valider la correction de l'implémentation, nous procédons de la même manière que pour l'algorithme de Christofides. En plus, nous vérifions que le graphe retourné par l'algorithme CR ne contient pas d'arêtes bloquées. 
+Notre implémentation de l'algorithme CR est disponible dans le fichier `cctp/cr.py`. Pour valider la correction de l'implémentation, nous avons développé une suite de tests unitaires vérifiant que :
+- le tour commence et se termine au même sommet ;
+- le tour généré visite tous les sommets du graphe ;
+- le tour généré passe au plus une fois par chaque sommet.
+
+Pour assurer la robustesse de notre implémentation face à différentes configurations, nous avons également effectué 1000 tests _fuzzy_ sur des graphes générés aléatoirement avec un nombre de sommet variant entre 4 et 256.
 
 === Cadre expérimental
-Nous réutilisons ici les mêmes méthodes déjà utilisée durant les autres parties.
+Nous réutilisons ici les mêmes méthodes déjà utilisée dans la première partie, cependant pour le tirage aléatoire des nœuds bloquées, nous effectuons un tirage sans remise de $k$ arêtes parmis les arêtes du graphes.
+
+=== Analyse du rapport d'approximation
+Pour évaluer le rapport d'approximation empirique de CR, nous avons construit une classe de graphes qui atteint la borne de complexité théorique. Cette construction s'inspire directement de l'exemple fourni par C.-S. Liao et Y. Huang démontrant que la borne en $O(sqrt(k))$ est sérrée.
+
+#figure(
+  image("figures/cr_ratio_plot.svg"),
+  caption: [
+  Évolution du rapport d'approximation de l'algorithme CR sur des graphes de borne serrée en fonction du nombre de sommets. La courbe avec marqueurs représente les carrés des ratios mesurées tandis que la ligne pointillée noire montre la régression linéaire avec son équation. La ligne horizontale noire indique le ratio idéal de 1.0.
+  ]
+) <fig-cr-ratio>
+
+Notre implémentation du graphe de borne serrée organise les sommets en une structure circulaire comprenant trois groupes principaux reliés par des sommets intermédiaires. Les sommets au sein de chaque groupe sont positionnés très près les uns des autres, tandis que les groupes eux-mêmes sont placés à distance significative. Pour un paramètre $n$ donné, nous créons un total de $3((p(p+1)/2 + 1)$ sommets et définissons un chemin reliant des sommets de sorte que la première itération ne passe que par les sommets non compris dans les groupes, puis que dans chaque itération suivante, on ne passe que par un sommet de chaque groupe.
+
+Le principle de cette construction est de bloquer toutes les arêtes sauf celles du chemin trouvé. Bien que cela implique de bloquer plus que $k = n - 2$ arêtes, cette approche ne compromet pas la validité de l'algorithme car elle préserve la connectivité du graphe via le chemin. Cette décision permet de se rapprocher du comportement théorique décrit dans la preuve. Si nous avions choisi de bloquer moins d'arêtes, choisies par un tirage aléatoire, le rapport d'approximation aurait été moins proche du rapport théorique de $O(sqrt(k))$ décrit dans la preuve.
+
+La @fig-cr-ratio présente les résultats de cette analyse, et confirment que le rapport d'approximation croît linéairement avec $O(sqrt(k))$, comme le montre la figure. La régression linéaire sur les valeurs mesurées démontre un corrélation presque parfaite ($R^2 = 0.9995$), validant que la borne théorique est effectivement serrée.
+
+Cette figure valide également notre implémentation, puisque nous observons exactement l'évoluation du rapport d'approximation prédite par l'analyse théorique.
 
 === Analyse de complexité
-Comme nous avons déjà analysé la complexité de l'algorithme de Christofides, notre analyse se concentre uniquement sur le temps d'exécution de CR après le calcul du tour initial.
+La complexité temporelle de l'algorithme CR est dominée par celle de l'algorithme de Christofides, c'est pourquoi nous retirons la phase de calcul du tour de Christofides de la mesure de performance temporelle. On s'intéresse alors à la complexité du reste de l'exécution de l'algorithme.
+
+La procédure de raccourci #smallcaps[Shortcut] est exécutée à chaque itération et peut examiner jusqu'à $O(n)$ sommets non visités. Pour chaque sommet, dans le pire des cas, l'algorithme doit vérifier jusqu'à $O(n)$ sommets déjà visités pour trouver un chemin alternatif, ce qui donne une complexité de $O(n^2)$ par itération. Comme montré dans la preuve du rapport d'approximation, le nombre d'itération est borné par $O(sqrt(k))$, où $k$ est le nombre d'aretes bloquées.
+
+La complexité totale est donc $O(sqrt(k) times n^2)$. Pour $k << n$, cette complexité est dominée par $O(n^2)$. Pour vérifier cette complexité empiriquement, nous avons mesuré le temps d'exécution de l'algorithme sur des graphes de tailles croissantes.
 
 #figure(
   image("figures/cr_time_plot_n.svg"),
   caption: [
-  Évolution du temps d'exécution de l'algorithme CR sur des instances du TSP générées aléatoirement en fonction du nombre de sommet (15 mesures par taille). La courbe bleue représente la moyenne interquartile et la zone bleutée l'intervalle interquartile. La courbe noire représente le résultat de la regréssion linéaire sur les racines cubiques des IQM, $R^2$ représente le cohéfficient de linéarité, avec des valeur proches de $1$ indiquant une forte corrélation linéaire. On fixe $k$ à $n-2$.
+  Évolution du temps d'exécution de l'algorithme CR sur des instances du TSP générées aléatoirement en fonction du nombre de sommet (15 mesures par taille). La courbe  représente la moyenne interquartile et la zone teintée l'intervalle interquartile. La courbe noire représente le résultat de la regréssion linéaire sur les racines carrées des IQM, $R^2$ représente le cohéfficient de linéarité, avec des valeur proches de $1$ indiquant une forte corrélation linéaire. On fixe $k$ à $n-2$.
   ]
 ) <fig-cr-time-n>
+
+La @fig-cr-time-n présente les résultats de cette analyse, avec le temps d'exécution en fonction du nombre de sommets. Nous avons appliqué une régression linéaire sur la racine carrée du temps d'exécution, obtenant un coefficient de corrélation linéaire $R^2$ proche de $1$, ce qui confirme la complexité en $O(n^2)$. Ces résultats montrent une croissance quadratique du temps d'exécution lorsque la taille du graphe augmente.
+
+La @fig-cr-time-k présente les résultats de cette analyse, avec le temps d'exécution en fonction du nombre d'arêtes bloquées. Nous avons appliqué une régression linéaire sur la racine carrée du temps d'exécution, obtenant un coefficient de corrélation linéaire $R^2$ d'environ $0.84$, ce qui indique une corrélation modérément forte avec la complexité théorique. On note que la variabilité est plus importante dans ce cas, suggérant que la distribution des arêtes bloquées influence davantage la performance de l'algorithme que leur nombre total. On note finalement, critiquement, que la complexité est directement liée au rapport d'approximation. Sur ce graphe, nous prenons des instances aléatoires, on est donc dans des cas bien meilleurs que le pire cas. C'est donc normal que nous ne voyons pas directement la complexité en $O(sqrt(k))$, car ici la complexité peut être bien plus variée.
 
 #figure(
   image("figures/cr_time_plot_k.svg"),
   caption: [
-  Évolution du temps d'exécution de l'algorithme CR sur des instances du TSP générées aléatoirement en fonction du nombre de sommet (25 mesures par taille). La courbe bleue représente la moyenne interquartile et la zone bleutée l'intervalle interquartile. La courbe noire représente le résultat de la regréssion linéaire sur les racines cubiques des IQM, $R^2$ représente le cohéfficient de linéarité, avec des valeur proches de $1$ indiquant une forte corrélation linéaire. On fixe $n$ à $258$.
+  Évolution du temps d'exécution de l'algorithme CR sur des instances du TSP générées aléatoirement en fonction du nombre de sommet (25 mesures par taille). La courbe  représente la moyenne interquartile et la zone teintée l'intervalle interquartile. La courbe noire représente le résultat de la regréssion linéaire sur les carrés des IQM, $R^2$ représente le cohéfficient de linéarité, avec des valeur proches de $1$ indiquant une forte corrélation linéaire. On fixe $n$ à $258$.
   ]
 ) <fig-cr-time-k>
 
-La @fig-cr-time-n présente les résultats du temps d'exécution de CR en fonction du nombre de sommets. Comme k est fixé à $n-2$, s'attend à un rapport d'approximation de $O(sqrt(n))$ ce qui est confirmé par la régression linéaire avec un coefficient de linéarité $R^2$ proche de 1. La même observation peut être fait pour le rapport d'approximation en fonction du nombre d'arêtes bloquées (voir @fig-cr-time-k).
 == Cnn
 
-L'algorithme CNN (Christofides Nearest Neighbor) représente une amélioration par rapport à l'algorithme CR, offrant un rapport d'approximation de $O(log k)$ et découvert par N. Hahn et M. Xefteris.
+L'algorithme CNN @hahn_covering (#smallcaps[Christofides Nearest Neighbor]) représente une amélioration par rapport à l'algorithme CR, offrant un rapport d'approximation de $O(log k)$ et découvert par N. Hahn et M. Xefteris.
 
 === Description de l'algorithme
 L'algorithme CNN se déroule en quatre phases principales.
 
-1. Calcul d'un tour initial par Christofides $T$.
+1. Calcul d'un tour initial $T$ avec Christofides.
 2. Parcours du tour en utilisant la procédure #smallcaps[Shortcut] utilisé par CR. Suite à ce tour, si on ne termine pas au nœud initial, on revient sur ses pas jusqu'à ce qu'on y revienne. Lors de cette phase, à chaque passage de sommet, on note les arêtes qui sont bloquées.
 3. On construit un graphe de connaissance $H$, ce graphe contient tous les sommets du graphe et toutes les arêtes adjacentes à des arêtes visitées lors du tour initial et non bloquées. C'est avec ce graphe de connaissance que l'on peut construire un multigraphe d'exploration $G'$, qui contient tous les nœuds qui n'ont pas pu être exploré lors du tour initial, et le sommet initial. Ce graphe contient entre tous deux sommets $u$ et $v$ deux chemins : d'une part un chemin risqué, qui correspond à l'arête $(u, v)$ de $G$, mais dont on ne peut pas être sur de si il est accessible ou non, et d'autres part, un chemin alternatif, calculé dans $H$, mais plus long. On a donc deux options pour chaque passage, soit, si il est accessible, prendre le chemin court, sinon, prendre le chemin long, garanti d'être accessible car calculé dans le graphe de connaissance, mais qui fait faire un détour.
 4. La dernière phase utilise l'algorithme du plus proche voisin (_Nearest Neighbor_) pour compléter le tour en visitant tous les nœuds de $G'$. L'algorithme sélectionne itérativement le nœud le plus proche accessible par un chemin non bloqué. Une fois tous les nœuds visitiés, l'algorithme revient au point de départ pour compléter le tour.
@@ -185,7 +260,7 @@ L'algorithme CNN se déroule en quatre phases principales.
 Cette section présente la preuve de l'article de N. Hahn et M. Xefteris (2023).
 
 ==== Théorème
-L'algorithme CNN a un rapport d'approximation de $O(log k)$ pour le problème k-CCTP, où $k$ est le nombre maximal d'arêtes bloquées.
+L'algorithme CNN a un rapport d'approximation de $O(log k)$ pour le problème $k$-CCTP, où $k$ est le nombre d'arêtes bloquées.
 
 ==== Preuve
 Soit $G$ un graphe complet métrique et $T$ le tour initial calculé par l'algorithme de Christofides. Puisque Christofides garantit une $3/2$-approximation du TSP, nous avons :
@@ -222,7 +297,7 @@ Notre implémentation de l'algorithme CNN est disponible dans le fichier `cctp/c
 - le tour généré visite tous les sommets du graphe ;
 - le tour généré passe au plus une fois par chaque sommet.
 
-Pour assurer la robustesse de notre implémentation face à différentes configurations, nous avons également effectué 200 tests _fuzzy_ sur des graphes générés aléatoirement avec un nombre de sommet variant entre 4 et 256.
+Pour assurer la robustesse de notre implémentation face à différentes configurations, nous avons également effectué 1000 tests _fuzzy_ sur des graphes générés aléatoirement avec un nombre de sommet variant entre 4 et 256.
 
 === Cadre expérimental
 Nous réutilisons ici les mêmes méthodes déjà utilisée durant les autres parties.
@@ -233,7 +308,7 @@ Pour évaluons le rapport d'approximation empirique de CNN, on cherche une class
 #figure(
   image("figures/cnn_ratio_plot.svg"),
   caption: [
-    Évolution du rapport d'approximation de l'algorithme CNN sur des graphes de borne serrée en fonction du nombre de sommets. La courbe bleue avec marqueurs représente les ratios mesurés, tandis que la ligne pointillée noire montre la régression logarithmique avec son équation. La ligne horizontale noire indique le ratio idéal de 1.0.
+    Évolution du rapport d'approximation de l'algorithme CNN sur des graphes de borne serrée en fonction du nombre de sommets. La courbe avec marqueurs représente les ratios mesurés, tandis que la ligne pointillée noire montre la régression logarithmique avec son équation. La ligne horizontale noire indique le ratio idéal de 1.0.
   ]
 ) <fig-cnn-ratio>
 
@@ -244,29 +319,29 @@ La @fig-cnn-ratio présente les résultats de cette analyse. Comme prévu par la
 Cette figure confirme aussi notre implémentation, on observe effectivement l'évolution attenue par l'analyse.
 
 === Analyse de complexité
-La complexité temporelle de l'algorithme CNN est dominée par celle de l'algorithme CNN, c'est pourquoi nous retirons la phase de calcul du tour de Christofides de la mesure de performance temporelle. On s'intéresse alors à la complexité du reste de l'exécution de l'algorithme.
-
-La phase de raccourci a une complexité de $O(n)$ due à l'algorithme de Christofides. La phase de calcul du graphe de connaissance et du graphe d'exploration implique le calcul de $O(k^2)$ plus courts chemins dans un graphe de taille $n$, pour une complexité de $O(k^2 dot n^2)$. La phase d'exploration a une complexité de $O(k^2)$ car elle applique l'algorithme du plus proche voisin sur un graphe de $k+1$ sommets.
-
-La complexité totale est donc $O(k^2 + n^2)$. Pour $k << n$, cette complexité est dominée par $O(n^2)$. On note en particulier, que l'observation faite durant l'évaluation du rapport d'approximation tient toujours ici : pour faire plus que le passage initial, il faut qu'au moins un nœud bloqué soit dans le tour de Christofides initial, mais cette probabilité réduit à mesure que $n$ grandit. Pour vérifier cette complexité empiriquement, nous avons mesuré le temps d'exécution de l'algorithme sur des graphes de tailles croissantes.
-
-La @fig-cnn-time-n présente les résultats de cette analyse, avec le temps d'exécution en fonction du nombre de sommets. Nous avons appliqué une régression linéaire, obtenant un coefficient de corrélation linéaire $R^2$ proche de $1$, ce qui confirme la complexité théorique en $O(n^2)$.
+La complexité temporelle de l'algorithme CNN est dominée par celle de l'algorithme de Christofides, c'est pourquoi nous retirons la phase de calcul du tour de Christofides de la mesure de performance temporelle. On s'intéresse alors à la complexité du reste de l'exécution de l'algorithme.
 
 #figure(
   image("figures/cnn_time_plot_n.svg"),
   caption: [
-  Évolution du temps d'exécution de l'algorithme CNN sur des instances du TSP générées aléatoirement en fonction du nombre de sommet (15 mesures par taille). La courbe bleue représente la moyenne interquartile et la zone bleutée l'intervalle interquartile. La courbe noire représente le résultat de la regréssion linéaire sur les racines cubiques des IQM, $R^2$ représente le cohéfficient de linéarité, avec des valeur proches de $1$ indiquant une forte corrélation linéaire. On fixe $k$ à $n-2$.
+  Évolution du temps d'exécution de l'algorithme CNN sur des instances du TSP générées aléatoirement en fonction du nombre de sommet (15 mesures par taille). La courbe représente la moyenne interquartile et la zone teintée l'intervalle interquartile. La courbe noire représente le résultat de la regréssion linéaire sur les racines carrées des IQM, $R^2$ représente le cohéfficient de linéarité, avec des valeur proches de $1$ indiquant une forte corrélation linéaire. On fixe $k$ à $n-2$.
   ]
 ) <fig-cnn-time-n>
 
-La @fig-cnn-time-k présente les résultats de cette analyse, avec le temps d'exécution en fonction du nombre de sommets bloqué. Nous avons appliqué une régression linéaire, obtenant un coefficient de corrélation linéaire $R^2$ proche de $1$, ce qui confirme la complexité théorique en $O(k^2)$. On note tout de même que la variance est grande sur cette mesure en comparaison à celle observée sur l'évolution en fonction de $n$.
+La phase de raccourci a une complexité de $O(n)$ due à l'algorithme de Christofides. La phase de calcul du graphe de connaissance et du graphe d'exploration implique le calcul de $O(k^2)$ plus courts chemins dans un graphe de taille $n$, pour une complexité de $O(k^2 dot n^2)$. La phase d'exploration a une complexité de $O(k^2)$ car elle applique l'algorithme du plus proche voisin sur un graphe de $k+1$ sommets.
+
+La complexité totale est donc $O(k^2 + n^2)$. Pour $k << n$, cette complexité est dominée par $O(n^2)$. Pour vérifier cette complexité empiriquement, nous avons mesuré le temps d'exécution de l'algorithme sur des graphes de tailles croissantes.
 
 #figure(
   image("figures/cnn_time_plot_k.svg"),
   caption: [
-  Évolution du temps d'exécution de l'algorithme CNN sur des instances du TSP générées aléatoirement en fonction du nombre de sommet (25 mesures par taille). La courbe bleue représente la moyenne interquartile et la zone bleutée l'intervalle interquartile. La courbe noire représente le résultat de la regréssion linéaire sur les racines cubiques des IQM, $R^2$ représente le cohéfficient de linéarité, avec des valeur proches de $1$ indiquant une forte corrélation linéaire. On fixe $n$ à $258$.
+  Évolution du temps d'exécution de l'algorithme CNN sur des instances du TSP générées aléatoirement en fonction du nombre de sommet (25 mesures par taille). La courbe représente la moyenne interquartile et la zone teintée l'intervalle interquartile. La courbe noire représente le résultat de la regréssion linéaire sur les racines carrées des IQM, $R^2$ représente le cohéfficient de linéarité, avec des valeur proches de $1$ indiquant une forte corrélation linéaire. On fixe $n$ à $258$.
   ]
 ) <fig-cnn-time-k>
+
+La @fig-cnn-time-n présente les résultats de cette analyse, avec le temps d'exécution en fonction du nombre de sommets. Nous avons appliqué une régression linéaire, obtenant un coefficient de corrélation linéaire $R^2$ proche de $1$, ce qui confirme la complexité théorique en $O(n^2)$.
+
+La @fig-cnn-time-k présente les résultats de cette analyse, avec le temps d'exécution en fonction du nombre de sommets bloqué. Nous avons appliqué une régression linéaire, obtenant un coefficient de corrélation linéaire $R^2$ proche de $1$, ce qui confirme la complexité théorique en $O(k^2)$. On note tout de même que la variance est grande sur cette mesure en comparaison à celle observée sur l'évolution en fonction de $n$.
 
 == Comparaisons
 
@@ -277,16 +352,20 @@ Notre protocole d'évalution mesure le rapport entre la distance parcourue par l
 === Graphe à poids constant
 Les graphes à poids constant représentent un cas particulier où toutes les arêtes ont un poids identique, fixé arbitrairement à 1. Ces graphes constituent une référence théorique importante car ils permettent d'isoler l'impact de la topologie du graphe sur les performances des algorithmes, indépendamment des variations de distance.
 
+Pour construire ces graphes, nous générons un graphe complet à $n$ sommets où chaque paire de sommets est reliée par une arête de poids 1. Cette structure satisfait l'inégalité triangulaire puisque le coût d'un chemin direct entre deux sommets est toujours inférieur à celui d'un chemin indirect.
+
 #figure(
   image("./figures/graphs_ratio_constant_n_plot.svg"),
   caption: [
     Évolution du rapport d'approximation des algorithmes CR et CNN sur des graphes à poids constant en fonction du nombre de sommet $n$. La courbe bleue représente la moyenne interquartile (IQM) des ratios CNN tandis que la courbe rouge représente celle des ratios CR. Les zones colorées correspondent aux intervalles interquartiles (IQ). Les mesures ont été effectuées avec un nombre fixe d'arêtes bloquées $k=n-2$ pour chaque valeur de $n$, sur 15 instances aléatoires par configuration.
   ]
+
 ) <fig-constant-n>
 
-Pour construire ces graphes, nous générons un graphe complet à $n$ sommets où chaque paire de sommets est reliée par une arête de poids 1. Cette structure satisfait l'inégalité triangulaire puisque le coût d'un chemin direct entre deux sommets est toujours inférieur à celui d'un chemin indirect.
-
 Les résultats présentés dans la @fig-constant-n montre que pour les petites valeurs de $n$, les deux algorithmes présentent des rapport d'approximation relativement élevés ($1.7$ pour CNN et $1.25$ pour CR), qui décroissent rapidement à mesure que $n$ augmente. Pour $n > 50$, les deux algorthmes convergent vers un rapport très proche de 1, ce qui indique une performance quasi-optimale.
+
+La @fig-constant-k montre quant à elle que CR maintient un rapport d'approximation constant de $1$ quelle que soit la valeur de $k$ tandis que CNN présente quelques fluctuations limitées en fonction de $k$. On note tout de meme que même dans les pire des cas, CNN ne monte que jusqu'à $1.004$, ce qui reste très proche de l'optimal et correspond aux observations faites sur le précédent graphe.
+
 
 #figure(
   image("./figures/graphs_ratio_constant_k_plot.svg"),
@@ -295,10 +374,10 @@ Les résultats présentés dans la @fig-constant-n montre que pour les petites v
   ]
 ) <fig-constant-k>
 
-La @fig-constant-k montre quant à elle que CR maintient un rapport d'approximation constant de $1$ quelle que soit la valeur de $k$ tandis que CNN présente quelques fluctuations limitées en fonction de $k$. On note tout de meme que même dans les pire des cas, CNN ne monte que jusqu'à $1.004$, ce qui reste très proche de l'optimal et correspond aux observations faites sur le précédent graphe.
-
 === Graphes euclidiens
 Les graphes euclidiens constituent une classe importante pour les applications réelles de planification d'itinéraire. Dans ces graphes, les sommets représentent des points dans un espace euclidien à deux dimensions, et les poids des arêtes correspondent aux distances euclidiennes entre ces deux points.
+
+Pour construire ces graphes, nous générons $n$ points avec des coordonnées aléatoires uniformément distribuées, dans l'intervalle $[-5, 5]^2$. Nous créons ensuite une graphe complet où le poids de chaque arête est la distance euclidienne entre les sommets correspondants. Cette méthode garantit que l'inégalité triangulaire est respectée, pusique dans un espace euclidien, la distance directe entre deux points est toujours inférieure ou égale à la somme des distances via un point intermédiaire.
 
 #figure(
   image("./figures/graphs_ratio_euclidian_n_plot.svg"),
@@ -307,9 +386,9 @@ Les graphes euclidiens constituent une classe importante pour les applications r
   ]
 ) <fig-euclidian-n>
 
-Pour construire ces graphes, nous générons $n$ points avec des coordonnées aléatoires uniformément distribuées, dans l'intervalle $[-5, 5]^2$. Nous créons ensuite une graphe complet où le poids de chaque arête est la distance euclidienne entre les sommets correspondants. Cette méthode garantit que l'inégalité triangulaire est respectée, pusique dans un espace euclidien, la distance directe entre deux points est toujours inférieure ou égale à la somme des distances via un point intermédiaire.
-
 La @fig-euclidian-n montre que les rapports d'approximation de CR et CNN suivent des trajectoirs similaires, diminuant rapidement avec l'augmentation de $n$ jusqu'à atteindre un plateau autour de $1.1$ pour les grandes valeurs de $n$. Cette convergence s'explique par le fait que lorsque le nombre de sommets augument, la probabilité qu'une arete bloquée se trouve sur le chemin optimal diminue, réduisant ainsi l'impact des blocages sur la performance globale.
+
+La @fig-euclidian-k révèle une autre tendance : les performances des deux algorithmes se dégradente progressivement à mesure que $k$ augmente, avec une variabilité croissante. Cette détérioration progressive a du sens, plus le nombre d'arête bloquées est élevé, plus les détours nécessaires sont fréquents et potentiellement coûteux. On note en particulier que, bien que CR et CNN utilisent des méthodes très différentes, les performances sont très similaires, ce qui suggère des solutions proches de l'optimal.
 
 #figure(
   image("./figures/graphs_ratio_euclidian_k_plot.svg"),
@@ -318,10 +397,10 @@ La @fig-euclidian-n montre que les rapports d'approximation de CR et CNN suivent
   ]
 ) <fig-euclidian-k>
 
-La @fig-euclidian-k révèle une autre tendance : les performances des deux algorithmes se dégradente progressivement à mesure que $k$ augmente, avec une variabilité croissante. Cette détérioration progressive a du sens, plus le nombre d'arête bloquées est élevé, plus les détours nécessaires sont fréquents et potentiellement coûteux. On note en particulier que, bien que CR et CNN utilisent des méthodes très différentes, les performances sont très similaires, ce qui suggère des solutions proches de l'optimal.
-
 === Graphe de Manhattan
 Les graphe en grille avec distances de Manhattan représentent un modèle particulièrement pertinent pour la planficiation d'iténéraires urbains, où les déplacements s'effectuent généralement selon une structure en quadrillage.
+
+Pour construire ces graphes, nous générons une grille de $n$ sommets disposé régulièrement dans un espace bidimmensionnel, formant une grille carrée. Chaque sommet est relié à tous les autres sommets, et le poids d'une arête entre deux sommets correspond à leur distance de Manhattan, c'est-à-dire la somme des différences absolues de leur coordonnées. Cette métrique respecte l'inégalité triangulaire.
 
 #figure(
   image("./figures/graphs_ratio_manhattan_n_plot.svg"),
@@ -330,7 +409,10 @@ Les graphe en grille avec distances de Manhattan représentent un modèle partic
   ]
 ) <fig-manhattan-n>
 
-Pour construire ces graphes, nous générons une grille de $n$ sommets disposé régulièrement dans un espace bidimmensionnel, formant une grille carrée. Chaque sommet est relié à tous les autres sommets, et le poids d'une arête entre deux sommets correspond à leur distance de Manhattan, c'est-à-dire la somme des différences absolues de leur coordonnées. Cette métrique respecte l'inégalité triangulaire.
+La @fig-manhattan-n révèle que les rapports d'approximation sont particlièrement élevés ($2.25$ pour CNN et $1.7$ pour CR), mais diminuent rapidement avec l'augmentation de $n$ pour se stabiliser autour de $1.1$. Cette diminution rapide s'explique par la multiplication des chemins alternatifs disponibles lorsque la taille de la grille augumente, offrant plus d'options pour contourner les aretes bloquées.
+
+
+La @fig-manhattan-k montre une flucturation plus importante des performances par rapport aux autres classes de graphes. Pour les faibles valeurs de $k$, le deux algorithmes présentent des performances similaires, proche de l'optimal. Cependant avec l'augmentation de $k$, les performances se dégradent avec une variabilité accrue, tout en restant globalement sous un ratio de $1.15$. Cette variabilité accrue peut s'expliquer par la structure particulière des grilles, où le blocage de certaines arêtes stratégique peut forcer des détours considérables, tandis que le blocage d'autres arêtes peut avoir un impact minimal. On note que ces résultats correspondent à l'intuition des touristes dans des villes comme Manhattan, où des voies bloquées forcent un détour complet du bloc, qui représente un grand détour.
 
 #figure(
   image("./figures/graphs_ratio_manhattan_k_plot.svg"),
@@ -339,16 +421,10 @@ Pour construire ces graphes, nous générons une grille de $n$ sommets disposé 
   ]
 ) <fig-manhattan-k>
 
-La @fig-manhattan-n révèle que les rapports d'approximation sont particlièrement élevés ($2.25$ pour CNN et $1.7$ pour CR), mais diminuent rapidement avec l'augmentation de $n$ pour se stabiliser autour de $1.1$. Cette diminution rapide s'explique par la multiplication des chemins alternatifs disponibles lorsque la taille de la grille augumente, offrant plus d'options pour contourner les aretes bloquées.
-
-La @fig-manhattan-k montre une flucturation plus importante des performances par rapport aux autres classes de graphes. Pour les faibles valeurs de $k$, le deux algorithmes présentent des performances similaires, proche de l'optimal. Cependant avec l'augmentation de $k$, les performances se dégradent avec une variabilité accrue, tout en restant globalement sous un ratio de $1.15$. Cette variabilité accrue peut s'expliquer par la structure particulière des grilles, où le blocage de certaines arêtes stratégique peut forcer des détours considérables, tandis que le blocage d'autres arêtes peut avoir un impact minimal. On note que ces résultats correspondent à l'intuition des touristes dans des villes comme Manhattan, où des voies bloquées forcent un détour complet du bloc, qui représente un grand détour.
-
 === Graphe fortement clusterisés
 Les graphes fortement clusterisés modélisent des réseaux présentant une structure communautaire prononcée, où des groupes de sommets sont fortement interconnectés, tandis que les connexions entre groupes sont plus rares ou plus coûteuses. Ce type de structure se retrouve dans de nombreux réseaux réels, notamment les réseaux de transport régionaux avec des zones urbaines denses reliées par des axes interurbains.
 
 Pour construire ces graphes, nous générons un ensemble de clusters, chacun contenant un nombre de sommet pour arriver à un total de $n$ sommets. Les centres des clusters sont positionnés aléatoirement dans l'espace, mais à des distances significatives les uns des autres (facteur multiplicatif de $20$). Les sommets des chaque cluster sont ensuite positionnés dans un voisinage proche de leur centre de cluster (distance maximale de $1$). Cette construction génère naturellement des communcautés distinctes avec des distances intra-cluster faibles et des distances inter-clusters élevées.
-
-La @fig-clustered-n présente le profil d'évolution suivant : pour les petites valeurs de $n$, les rapport d'approximation sont élevés (jusqu'à $1.8$ pour CNN et $1.7$ pour CR), puis diminuent rapidement avant de se stabiliser autour de $1.3$, soit une valeur plus élevée que pour d'autres classes de graphes. Cette stabilisation à un niveau supérieur s'explique par la structure clusterisée : lorsqu'une arête inter-clusters est bloquée, les détours nécessaires sont substantiellement plus coûteux.
 
 #figure(
   image("./figures/graphs_ratio_clustered_n_plot.svg"),
@@ -357,8 +433,7 @@ La @fig-clustered-n présente le profil d'évolution suivant : pour les petites 
   ]
 ) <fig-clustered-n>
 
-La @fig-clustered-k révèle un comportement encore plus étonnant, avec un seuil critique autour de $k = 100$. En dessous ce ce seuil, les deux algorithmes maitiennent des performances proches de l'optimal. Au-delà, les perforamnces se dégradent rapidement, avec une grande variabilité. Ce phénomène de seuil peut s'expliquer par la transition entre un régime où les blocages affectent principalement des aretes intra-cluster (facilement contournables) et un régime où les blocages commencent à impacter les arêtes inter-clusters critiques, nécessitant des détours considérables.
-
+La @fig-clustered-n présente le profil d'évolution suivant : pour les petites valeurs de $n$, les rapport d'approximation sont élevés (jusqu'à $1.8$ pour CNN et $1.7$ pour CR), puis diminuent rapidement avant de se stabiliser autour de $1.3$, soit une valeur plus élevée que pour d'autres classes de graphes. Cette stabilisation à un niveau supérieur s'explique par la structure clusterisée : lorsqu'une arête inter-clusters est bloquée, les détours nécessaires sont substantiellement plus coûteux.
 
 #figure(
   image("./figures/graphs_ratio_clustered_k_plot.svg"),
@@ -367,10 +442,10 @@ La @fig-clustered-k révèle un comportement encore plus étonnant, avec un seui
   ]
 ) <fig-clustered-k>
 
+La @fig-clustered-k révèle un comportement encore plus étonnant, avec un seuil critique autour de $k = 100$. En dessous ce ce seuil, les deux algorithmes maitiennent des performances proches de l'optimal. Au-delà, les perforamnces se dégradent rapidement, avec une grande variabilité. Ce phénomène de seuil peut s'expliquer par la transition entre un régime où les blocages affectent principalement des aretes intra-cluster (facilement contournables) et un régime où les blocages commencent à impacter les arêtes inter-clusters critiques, nécessitant des détours considérables.
+
 === Graphes basés sur des lois de puissance
 Les graphes basés sur des lois de puissance modélisent des réseaux où la distribution des poids suit une loi de puissance, caractéristique de nombreux phénomènes naturels et sociaux. Dans ces graphes, quelques sommets jouent le rôle de _hubs_ centraux, tandis que la majorité des sommets sont périphériques.
-
-Pour construire ces graphes, nous positionnons les sommets selon un distribution radiale où la distance au centre est proportionnelle à $((i+1)/n)^(1/2.5) times 10$, où $i$ est l'indice du sommet et $n$ le nombre total de sommets. L'ange est choisi aléatoirement entre $0$ et $2 pi$. Les arêtes reliant tous les sommets, avec des poids égaux aux distances euclidiennes, préservant ainsi l'inégalité triangulaire.
 
 #figure(
   image("./figures/graphs_ratio_power_law_n_plot.svg"),
@@ -379,9 +454,9 @@ Pour construire ces graphes, nous positionnons les sommets selon un distribution
   ]
 ) <fig-power-law-n>
 
-La @fig-power-law-n montre un comportement similaire à celui des graphes euclidiens : un rapport d'approximation initial élevé (environ $1.7$ pour CNN et $1.35$ pur CR) qui diminue rapidement avec l'augmentation de $n$ pour se stabiliser autour de $1.1$. Cette convergence reflète la robustesse des deux algorithmes face à la structure en hub des graphes en loi de puissance.
+Pour construire ces graphes, nous positionnons les sommets selon un distribution radiale où la distance au centre est proportionnelle à $((i+1)/n)^(1/2.5) times 10$, où $i$ est l'indice du sommet et $n$ le nombre total de sommets. L'ange est choisi aléatoirement entre $0$ et $2 pi$. Les arêtes reliant tous les sommets, avec des poids égaux aux distances euclidiennes, préservant ainsi l'inégalité triangulaire.
 
-Le @fig-power-law-k révèle une dégradation progressive mais limitée des performances avec l'augmentation de $k$. Pour $k < 100$, les deux algorithmes maitiennent des perforamnces proches de l'optimal. Au-delà, les performances se dégradent progressivement, mais de manière plus contenue que pour d'autres classes de graphes, les ratios restant inférieurs à $1.12$. Cette robustesse relative s'explique par la présence de hubs qui offrent de multiples chemins alternatifs, limitant l'impact des blocages individuels.
+La @fig-power-law-n montre un comportement similaire à celui des graphes euclidiens : un rapport d'approximation initial élevé (environ $1.7$ pour CNN et $1.35$ pur CR) qui diminue rapidement avec l'augmentation de $n$ pour se stabiliser autour de $1.1$. Cette convergence reflète la robustesse des deux algorithmes face à la structure en hub des graphes en loi de puissance.
 
 #figure(
   image("./figures/graphs_ratio_power_law_k_plot.svg"),
@@ -389,6 +464,8 @@ Le @fig-power-law-k révèle une dégradation progressive mais limitée des perf
     Évolution du rapport d'approximation des algorithmes CR et CNN sur des graphes basés sur des lois de puissance en fonction du nombre d'arêtes bloquées $k$. La courbe bleue représente la moyenne interquartile (IQM) des ratios CNN, tandis que la courbe rouge représente celle des ratios CR. Les zones colorées correspondent aux intervalles interquartiles (IQ). Les mesures ont été effectuées avec un nombre fixe de sommets $n = 256$, sur 15 instances aléatoires par configuration.
   ]
 ) <fig-power-law-k>
+
+Le @fig-power-law-k révèle une dégradation progressive mais limitée des performances avec l'augmentation de $k$. Pour $k < 100$, les deux algorithmes maitiennent des perforamnces proches de l'optimal. Au-delà, les performances se dégradent progressivement, mais de manière plus contenue que pour d'autres classes de graphes, les ratios restant inférieurs à $1.12$. Cette robustesse relative s'explique par la présence de hubs qui offrent de multiples chemins alternatifs, limitant l'impact des blocages individuels.
 
 === Analyse comparative
 Notre analyse empirique sur ces cinq classes de graphes permet de dégager plusieurs remarques sur le choix d'un algorithme en fonction du contexte de l'application.

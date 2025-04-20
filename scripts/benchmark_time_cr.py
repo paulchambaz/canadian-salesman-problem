@@ -6,7 +6,7 @@ from pathlib import Path
 import numpy as np
 from tqdm import tqdm
 
-from cctp import christofides, cr, utils, christofides_p
+from cctp import christofides, cr, utils
 
 
 def benchmark_n():
@@ -27,16 +27,16 @@ def benchmark_n():
         for _ in tqdm(range(repeats), desc=f"Testing n={n}", leave=False):
             graph = utils.create_random_graph(n)
             blocked_edges = utils.create_random_blocks(n - 2, graph)
-            tour, _ = christofides_p.travelling_salesman_christofides(graph)
+            tour, _ = christofides.christofides_tsp(graph)
             start = time.time()
-            _, _ = cr.canadian_traveller_cyclic_routing(graph, blocked_edges, tour)
+            _, _ = cr.cr_cctp(graph, blocked_edges, tour)
             runtimes.append(time.time() - start)
 
         stats = utils.compute_stats(runtimes)
         results["data"][n] = {**stats, "runtimes": runtimes}
 
     Path("results").mkdir(exist_ok=True)
-    filename = "results/cr_runtime_n_results_p.pk"
+    filename = "results/cr_runtime_n_results.pk"
     with open(filename, "wb") as f:
         pickle.dump(results, f)
 
@@ -46,7 +46,7 @@ def benchmark_k():
     min_n = 4
     max_n = 256
     step = 12
-    repeats = 25
+    repeats = 100
 
     random.seed(seed)
     np.random.seed(seed)
@@ -59,23 +59,23 @@ def benchmark_k():
         for _ in tqdm(range(repeats), desc=f"Testing k={n}", leave=False):
             graph = utils.create_random_graph(max_n + 2)
             blocked_edges = utils.create_random_blocks(n, graph)
-            tour, _ = christofides_p.travelling_salesman_christofides(graph)
+            tour, _ = christofides.christofides_tsp(graph)
             start = time.time()
-            _, _ = cr.canadian_traveller_cyclic_routing(graph, blocked_edges, tour)
+            _, _ = cr.cr_cctp(graph, blocked_edges, tour)
             runtimes.append(time.time() - start)
 
         stats = utils.compute_stats(runtimes)
         results["data"][n] = {**stats, "runtimes": runtimes}
 
     Path("results").mkdir(exist_ok=True)
-    filename = "results/cr_runtime_k_results_p.pk"
+    filename = "results/cr_runtime_k_results.pk"
     with open(filename, "wb") as f:
         pickle.dump(results, f)
 
 
 def main():
     benchmark_n()
-    #benchmark_k()
+    benchmark_k()
 
 
 if __name__ == "__main__":

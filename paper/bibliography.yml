@@ -1,0 +1,24 @@
+christofides:
+  type: Article
+  title: Worst-Case Analysis of a New Heuristic for the Travelling Salesman Problem
+  author: ["Nicos Christofides"]
+  date: 1976
+  journal: Operations Research Forum
+  volume: 3
+
+liao_covering:
+  type: Article
+  title: The Covering Canadian Traveller Problem
+  author: ["Chung-Shou Liao", "Yamming Huang"]
+  date: 2014
+  journal: Theoretical Computer Science
+  volume: 530
+  pages: 80-88
+  doi: https://doi.org/10.1016/j.tcs.2014.02.026
+
+hahn_covering:
+  type: Article
+  title: The Covering Canadian Traveller Problem Revisited
+  author: ["Niklas Hahn", "Michalis Xefteris"]
+  date: 2023
+  url: https://arxiv.org/abs/2304.14319

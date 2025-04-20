@@ -13,7 +13,7 @@ from .utils import calculate_path_weight, edge
 
 def cnn_cctp(
     graph: nx.Graph,
-    blocked_edges: set[Edge] = None,
+    blocked_edges: set[Edge],
     tour: Path = None,
 ) -> tuple[Path, Weight]:
     """Find a near-optimal path avoiding blocked edges using CNN.

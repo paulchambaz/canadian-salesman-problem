@@ -85,7 +85,8 @@ def shortcut_eulerian_path(eulerian_path: list[Node]) -> Path:
 
     Takes an Eulerian path and removes repeated vertices to create a Hamiltonian
     cycle. This implicitly applies the triangle inequality by replacing paths
-    through intermediary vertices with direct edges between non-repeated vertices.
+    through intermediary vertices with direct edges between non-repeated
+    vertices.
 
     Args:
         eulerian_path: List of nodes forming an Eulerian path

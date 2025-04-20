@@ -6,7 +6,7 @@ import networkx as nx
 from .christofides import christofides_tsp
 from .cnn import cnn_cctp
 from .cr import cr_cctp
-from .graphs import create_power_law_graph
+from .graphs import cr_tight_bound_graph
 from .utils import (
     create_polygon_graph,
     create_random_blocks,
@@ -23,7 +23,7 @@ def test_christofides():
 
     pos = nx.get_node_attributes(graph, "pos")
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
 
     ax1.set_title("Complete Graph")
     nx.draw(
@@ -69,14 +69,11 @@ def test_cr():
 
     # graph = create_random_graph(n)
     graph = create_polygon_graph(n)
-    # blocked_edges = create_random_blocks(k, graph)
-    blocked_edges = {(2, 3), (1, 3), (1, 4)}
+    blocked_edges = create_random_blocks(k, graph)
     print(f"{blocked_edges=}")
 
     christofides_tour, christofides_cost = christofides_tsp(graph)
     cnn_tour, cnn_cost = cr_cctp(graph, blocked_edges, christofides_tour)
-
-    return
 
     pos = nx.get_node_attributes(graph, "pos")
 
@@ -270,11 +267,17 @@ def test_cnn():
 
 
 def test():
-    graph = create_power_law_graph(64)
+    graph, blocked_edges = cr_tight_bound_graph(1)
+    tour, cost = christofides_tsp(graph)
+
+    cr_tour, _ = cr_cctp(graph, blocked_edges, tour)
+    print()
+    print(f"{cr_tour=}")
+    print()
 
     pos = nx.get_node_attributes(graph, "pos")
 
-    fig, (ax1) = plt.subplots(1, 1, figsize=(6, 6))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
 
     ax1.set_title("Graphe complet avec arêtes bloquées")
     nx.draw(
@@ -288,9 +291,41 @@ def test():
         ax=ax1,
     )
 
-    edge_labels = nx.get_edge_attributes(graph, "weight")
-    nx.draw_networkx_edge_labels(
-        graph, pos, edge_labels=edge_labels, font_size=8, ax=ax1
+    # edge_labels = nx.get_edge_attributes(graph, "weight")
+    # nx.draw_networkx_edge_labels(
+    #     graph, pos, edge_labels=edge_labels, font_size=8, ax=ax1
+    # )
+
+    blocked_edges_list = [
+        edge(u, v) for u, v in graph.edges() if edge(u, v) in blocked_edges
+    ]
+    nx.draw_networkx_edges(
+        graph,
+        pos,
+        edgelist=blocked_edges_list,
+        edge_color="black",
+        width=1,
+        ax=ax1,
+    )
+
+    ax2.set_title(f"Christofides Tour (Cost: {cost:.2f})")
+    tour_graph = nx.Graph()
+    for i in range(len(tour) - 1):
+        u, v = tour[i], tour[i + 1]
+        tour_graph.add_edge(u, v)
+
+    nx.draw(
+        tour_graph,
+        pos,
+        with_labels=True,
+        node_color="lightgreen",
+        node_size=500,
+        font_weight="bold",
+        ax=ax2,
+    )
+    tour_edges = list(zip(tour, tour[1:] + [tour[0]], strict=False))
+    nx.draw_networkx_edges(
+        tour_graph, pos, edgelist=tour_edges, width=2, edge_color="r", ax=ax2
     )
 
     plt.tight_layout()
@@ -299,9 +334,9 @@ def test():
 
 def main():
     # test_christofides()
-    test_cr()
+    # test_cr()
     # test_cnn()
-    # test()
+    test()
 
 
 if __name__ == "__main__":
