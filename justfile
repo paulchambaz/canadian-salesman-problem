@@ -45,3 +45,19 @@ benchmark-graphs *ARGS:
 
 visualize-graphs *ARGS:
   python -m scripts.visualize_ratio_graphs {{ ARGS }}
+
+publish:
+  rm -fr dist
+  rm -fr RP-paulchambaz-philipphanussek
+  mkdir -p RP-paulchambaz-philipphanussek
+  mkdir -p RP-paulchambaz-philipphanussek/cctp
+  cp -r cctp/*.py RP-paulchambaz-philipphanussek/cctp
+  rm RP-paulchambaz-philipphanussek/cctp/__main__.py
+  mkdir -p RP-paulchambaz-philipphanussek/scripts
+  cp -r scripts/*.py RP-paulchambaz-philipphanussek/scripts
+  cp paper/paper.pdf RP-paulchambaz-philipphanussek
+  cp README.md RP-paulchambaz-philipphanussek
+  zip -r RP-paulchambaz-philipphanussek.zip RP-paulchambaz-philipphanussek
+  rm -fr RP-paulchambaz-philipphanussek
+  mkdir -p dist
+  mv RP-paulchambaz-philipphanussek.zip dist/
